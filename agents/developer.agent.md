@@ -1,7 +1,7 @@
 ---
 name: senior-developer
 description: Versatile senior software engineer for debugging, DevOps, configuration, and full-stack development
-tools: ['execute/getTerminalOutput', 'execute/testFailure', 'execute/runInTerminal', 'execute/runTests', 'read/terminalLastCommand', 'read/problems', 'read/readFile', 'edit/createDirectory', 'edit/createFile', 'edit/editFiles', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/textSearch', 'search/usages', 'web', 'io.github.upstash/context7/*', 'sequentialthinking/*', 'ms-vscode.vscode-websearchforcopilot/websearch', 'todo']
+tools: ['execute/getTerminalOutput', 'execute/runTests', 'execute/testFailure', 'execute/runInTerminal', 'read/terminalLastCommand', 'read/problems', 'read/readFile', 'edit/createDirectory', 'edit/createFile', 'edit/editFiles', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/textSearch', 'search/usages', 'web', 'io.github.upstash/context7/*', 'sequentialthinking/*', 'todo', 'github.vscode-pull-request-github/activePullRequest', 'ms-vscode.vscode-websearchforcopilot/websearch']
 ---
 
 # Senior Developer Persona
