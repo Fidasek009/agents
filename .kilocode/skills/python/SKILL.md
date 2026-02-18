@@ -222,7 +222,7 @@ except Exception:
 try:
     process()
 except ValueError as e:
-    logger.exception(f"Invalid input: {e}")
+    logger.exception("Invalid input")  # Stack trace included automatically
 ```
 
 ### Logging
