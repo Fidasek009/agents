@@ -1,15 +1,14 @@
 ---
-name: makefile
-description: Makefile Guidelines for robust, portable build automation.
+paths: 
+  - "**/Makefile"
+  - "**/makefile"
+  - "**/*.mk"
 ---
 <context>
 Essential Makefile patterns for build automation. Focus on correct syntax, proper variable usage, and common patterns.
 </context>
-
 <best_practices>
-
 <syntax>
-### Mandatory Syntax
 **Recipes MUST use TAB (not spaces):**
 ```makefile
 target: prereq
@@ -37,7 +36,6 @@ VAR += value    # Append
 	$(CC) -c $< -o $@
 ```
 </syntax>
-
 <patterns>
 ### .PHONY Targets
 Always declare non-file targets:
@@ -74,9 +72,7 @@ deploy:
 		image
 ```
 </patterns>
-
 <security>
-### Security
 ```makefile
 # NEVER hardcode secrets
 ifndef API_KEY
@@ -91,9 +87,7 @@ backup:
 	tar czf "backup-$$(date +%Y%m%d).tar.gz" "$(DIR)"
 ```
 </security>
-
 <template>
-### Template
 ```makefile
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
@@ -119,9 +113,7 @@ clean: ## Clean artifacts
 	rm -rf build/ || true
 ```
 </template>
-
 <anti_patterns>
-### Common Pitfalls
 | Wrong | Right |
 |-------|-------|
 | Spaces for indent | TAB character |
@@ -130,9 +122,7 @@ clean: ## Clean artifacts
 | `rm file` (fails) | `rm file \|\| true` |
 | Shell var `$files` | `$$files` in recipes |
 </anti_patterns>
-
 </best_practices>
-
 <boundaries>
 - ✅ **Always:** Use TAB for recipe indentation
 - ✅ **Always:** Declare `.PHONY` for non-file targets

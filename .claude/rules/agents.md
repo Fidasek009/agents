@@ -1,1 +1,0 @@
-When you see information inside `AGENTS.md` files that is contradicting the code logic, always fix the `AGENTS.md` file to reflect the code logic. The `AGENTS.md` file is meant to be a source of truth for LLM agents, so it should always be accurate and up-to-date with the actual codebase.

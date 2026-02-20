@@ -1,6 +1,8 @@
 ---
-name: docker
-description: Containerization best practices for reproducibility, security, and efficiency.
+paths: 
+  - "**/Dockerfile"
+  - "**/docker-compose.yml"
+  - "**/docker-compose.prod.yml"
 ---
 <context>
 - **Immutability:** Never modify running containers; create new images for changes.
@@ -8,9 +10,7 @@ description: Containerization best practices for reproducibility, security, and 
 - **Security:** Run as non-root, scan for vulnerabilities, use minimal base images.
 - **Portability:** Externalize configuration; ensure images run consistently everywhere.
 </context>
-
 <best_practices>
-
 <dockerfile>
 ### Multi-Stage Builds
 Separate build dependencies from runtime.
@@ -56,7 +56,6 @@ COPY . .
 CMD ["node", "server.js"]
 ```
 </dockerfile>
-
 <compose>
 ### Docker Compose
 
@@ -94,7 +93,6 @@ volumes:
   db_data:
 ```
 </compose>
-
 <structure>
 ### Project Structure
 - `Dockerfile` in service root directory
@@ -102,9 +100,7 @@ volumes:
 - `docker-compose.yml` for local development
 - `docker-compose.prod.yml` for production overrides
 </structure>
-
 </best_practices>
-
 <boundaries>
 - ✅ **Always:** Multi-stage builds to separate build from runtime
 - ✅ **Always:** Non-root user in final stage

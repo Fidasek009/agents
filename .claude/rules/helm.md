@@ -1,16 +1,12 @@
 ---
-name: helm
-description: Helm chart best practices for Kubernetes deployments, including templating, security, and maintainability.
+paths: 
+  - "**/helm/**"
 ---
 <context>
 Apply these rules when creating or modifying Helm charts. Focus on naming conventions, security, and proper templating.
 </context>
-
 <best_practices>
-
 <naming>
-### Naming Conventions
-
 **Chart Names:**
 - Pattern: `lowercase-with-hyphens`
 - Only `[a-z0-9-]`, start with letter
@@ -26,10 +22,7 @@ Apply these rules when creating or modifying Helm charts. Focus on naming conven
 - `version`: Chart version
 - `appVersion`: Application version (quoted)
 </naming>
-
 <templating>
-### Templating
-
 **Namespace template names:**
 ```yaml
 # ✅ Correct
@@ -53,10 +46,7 @@ replicas: {{ .Values.replicaCount | default 1 }}
 value: {{ .Values.dbHost | quote }}
 ```
 </templating>
-
 <values>
-### Values File
-
 **Type safety:**
 ```yaml
 # ✅ Correct - quote strings and versions
@@ -85,9 +75,7 @@ server:
     host: "example.com"
 ```
 </values>
-
 <security>
-### Security
 
 **Secrets:**
 ```yaml
@@ -117,10 +105,7 @@ securityContext:
 
 **RBAC:** Use least-privilege; avoid `cluster-admin` and `*` verbs.
 </security>
-
 <resources>
-### Resources & Health Checks
-
 ```yaml
 resources:
   limits:
@@ -143,10 +128,7 @@ readinessProbe:
   initialDelaySeconds: 5
 ```
 </resources>
-
 <validation>
-### Validation
-
 ```bash
 helm lint ./mychart
 helm template ./mychart --debug
@@ -154,9 +136,7 @@ helm install --dry-run --debug test ./mychart
 helm test <release-name>
 ```
 </validation>
-
 </best_practices>
-
 <boundaries>
 - ✅ **Always:** Use `lowercase-with-hyphens` for chart names
 - ✅ **Always:** Use `camelCase` for values
