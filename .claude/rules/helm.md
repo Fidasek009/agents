@@ -53,7 +53,7 @@ value: {{ .Values.dbHost | quote }}
 image:
   tag: "1.2.3"
   pullPolicy: "IfNotPresent"
-port: "8080"
+port: 8080
 enabled: false  # Booleans: no quotes
 ```
 
@@ -67,7 +67,7 @@ replicaCount: 3
 ```yaml
 # ✅ Good
 serverHost: "example.com"
-serverPort: "8080"
+serverPort: 8080
 
 # ❌ Avoid
 server:
@@ -117,13 +117,13 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: {{ .Values.healthCheckPath | default "/health" }}
+    path: {{ .Values.livenessProbe.path | default "/health" }}
     port: http
   initialDelaySeconds: 30
 
 readinessProbe:
   httpGet:
-    path: {{ .Values.healthCheckPath | default "/ready" }}
+    path: {{ .Values.readinessProbe.path | default "/ready" }}
     port: http
   initialDelaySeconds: 5
 ```
@@ -140,7 +140,7 @@ helm test <release-name>
 <boundaries>
 - ✅ **Always:** Use `lowercase-with-hyphens` for chart names
 - ✅ **Always:** Use `camelCase` for values
-- ✅ **Always:** Quote all strings in values.yaml
+- ✅ **Always:** Quote all strings in values.yaml (exception: numeric fields such as ports, replica counts, and resource quantities must be unquoted integers)
 - ✅ **Always:** Namespace template names with chart prefix
 - ✅ **Always:** Include resource limits and health checks
 - ✅ **Always:** Document every value with comments
