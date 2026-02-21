@@ -3,7 +3,7 @@ paths:
   - "**/*.py"
 ---
 <context>
-These guidelines complement the General Software Engineering Principles with Python-specific idioms. They apply when writing or reviewing any Python code.
+These guidelines cover Python-specific best practices, idioms, and anti-patterns.
 </context>
 <best_practices>
 <idioms>
