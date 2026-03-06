@@ -144,7 +144,8 @@ Follow **Google Style**. Do not duplicate type info—rely on hints.
 **Good:**
 ```python
 def calculate_tax(price: float, rate: float) -> float:
-    """Calculates the tax amount.
+    """
+    Calculates the tax amount.
 
     Args:
         price: The base price.
