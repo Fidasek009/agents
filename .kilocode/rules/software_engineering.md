@@ -39,22 +39,49 @@ These guidelines take precedence over language-specific rules. They establish th
 </functions>
 
 <comments>
-### Comments
-Comments should explain the **intent** and **reasons** behind decisions—not describe what the code does or how it was changed.
+**Default to no comment.** Most code should be self-explanatory through naming and structure. Only add a comment when the code alone cannot convey *why* a decision was made.
 
-- **Document "Why":** Explain the reasoning, edge cases, or business rules that aren't obvious from the code itself.
-- **Avoid Redundant Comments:** If the code is self-explanatory, no comment is needed.
-- **Never Write Changelog Comments:** Do not describe what was modified or refactored. These comments are useless to future readers who don't know (or care about) the previous implementation.
+**Litmus test:** If deleting the comment forces the reader to check git blame or ask a teammate to understand a non-obvious decision, keep it. Otherwise, delete it.
 
-**Bad:**
+- **Document "Why":** Explain business constraints, edge cases, and non-obvious reasons — not what the code does.
+- **Capture Non-Obvious Tradeoffs:** Record rationale when alternatives were considered or when the obvious approach was intentionally avoided.
+- **Never Write Changelog Comments:** Do not describe what you just changed or why you changed it. The comment must make sense to a reader who has no knowledge of the change history.
+- **Keep comments short.** One line is ideal. Two lines is the maximum.
+
+**Bad** — restates what the code says, or reads like a changelog:
 ```python
-total = sum(items)  # now uses built-in sum function instead of iterating manually
+# Sort users by last login date
+users.sort(key=lambda u: u.last_login)
+
+# Check if the user is an admin
+if user.role == Role.ADMIN:
+
+# Changed from 5 to 10 because the old value was too low
+MAX_BATCH_SIZE = 10
+
+# Replaced threading with asyncio for better performance
+await process_batch(items)
+
+# Removed the old validation logic and added schema-based validation
+schema.validate(payload)
 ```
 
-**Good:**
+**Good** — explains something the code *cannot* tell you:
 ```python
-# Timeout set to 30s to match upstream API's max response time (see JIRA-1234)
-TIMEOUT_SECONDS = 30
+# Cold accounts fail fast — process them first to free up batch slots
+users.sort(key=lambda u: u.last_login)
+
+# Admins bypass rate limiting per contract with enterprise clients
+if user.role == Role.ADMIN:
+
+# Benchmarked: 10 saturates the connection pool without triggering OOM
+MAX_BATCH_SIZE = 10
+
+# no comment needed — self-explanatory
+await process_batch(items)
+
+# no comment needed — self-explanatory
+schema.validate(payload)
 ```
 </comments>
 
