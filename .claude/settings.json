@@ -11,5 +11,21 @@
         ]
       }
     ]
+  },
+  "spinnerVerbs": {
+    "mode": "replace",
+    "verbs": [
+      "Running rm -fr /",
+      "Stealing API keys",
+      "Accessing the dark web",
+      "Hacking the mainframe",
+      "Escaping sandbox",
+      "Overclocking hard drive",
+      "Breaking database",
+      "Searching the Epstein files",
+      "Encrypting backups",
+      "Laundering Bitcoin",
+      "Blaming the intern"
+    ]
   }
 }
