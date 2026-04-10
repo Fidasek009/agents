@@ -5,7 +5,8 @@ description: This file provides guidelines on writing style, citations, and type
 
 This section provides guidelines on writing style, citations, and typesetting for the thesis.
 
-<text_style>
+## Text Style
+
 The thesis must be written in a professional style. The essential specifics compared to other functional styles (e.g., journalistic or artistic) are accuracy, clarity, emotional neutrality, and logical argumentation.
 
 By precision we mean, above all, the choice of the correct vocabulary. Find specialist terms for your topic, define them (preferably with reference to specialist literature) and use them wherever necessary. Stick to one term, even if there are several (you can mention them, of course). Each term must have a definition, the only exceptions being terms that are familiar to the computer science community, e.g. command, program. Every abbreviation must be defined when it first appears; the only exceptions are abbreviations that are commonly known (e.g., USA, IBM). Accuracy is also related to providing verifiable data (which is a big difference from journalistic practice).
@@ -28,8 +29,9 @@ the accumulation of verbal nouns, i.e. forms ending in "ní" or "tí" (terminati
 errors in word order and cumbersome wording,
 poor structure of the work (too many short chapters, uneven distribution of text between chapters),
 the presence of redundant parts, e.g. the theoretical part of the thesis discusses concepts that are not used further.
-</text_style>
-<references_and_citations>
+
+## References And Citations
+
 A bibliographic citation is a collection of information about a cited publication or part of a publication that enables its identification. A bibliographic citation is distinguished from a reference to a citation, which is a reference in the text to a citation given elsewhere. The rules for the creation of bibliographic citations and their inclusion in scientific publications are given in CSN 01 0197. A detailed analysis of the creation of citations can be found, for example, in the publications on Elportal. In computer science, a common style of citation is by using serial numbers (e.g. [1]) , but referencing by name and year of publication (e.g. [Gruber, 1969]) or by abbreviation (e.g. [Gru68]) can also be used, but always uniformly.
 
 The most common errors in dealing with the literature include:
@@ -44,8 +46,9 @@ A typical problem is the excessive use of web resources and specifically Wikiped
 One of the goals of the thesis is to demonstrate that you can work with scholarly sources. If (almost) all references are to Wikipedia, then you are not demonstrating this ability very much.
 Quality Wikipedia articles usually contain links to original sources. Try to find a relevant primary source and cite that directly.
 There are cases where it may be relevant to cite Wikipedia (e.g., we want to refer the reader to a well-developed discussion of a concept that is important to understanding the paper), but in most cases it is more relevant to cite, for example, an original technical article, a technical standard, or a standard textbook on the topic.
-</references_and_citations>
-<typesetting>
+
+## Typesetting
+
 Pay attention to typographic principles, common mistakes include:
 
 Incorrect quotation marks,
@@ -53,4 +56,3 @@ ignoring the difference between a hyphen and a hyphen or hyphenation,
 inappropriate line and page breaks (widows and orphans),
 incorrect spacing of punctuation marks and quotations,
 inconsistent use of punctuation in lists and captions of figures or tables.
-</typesetting>

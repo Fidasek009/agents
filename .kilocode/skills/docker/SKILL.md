@@ -2,17 +2,19 @@
 name: docker
 description: Containerization best practices for reproducibility, security, and efficiency.
 ---
-<context>
+## Context
+
 - **Immutability:** Never modify running containers; create new images for changes.
 - **Efficiency:** Minimize image size and build time (multi-stage, caching).
 - **Security:** Run as non-root, scan for vulnerabilities, use minimal base images.
 - **Portability:** Externalize configuration; ensure images run consistently everywhere.
-</context>
 
-<best_practices>
+## Best Practices
 
-<dockerfile>
-### Multi-Stage Builds
+### Dockerfile
+
+#### Multi-Stage Builds
+
 Separate build dependencies from runtime.
 
 ```dockerfile
@@ -44,7 +46,8 @@ EXPOSE 3000
 CMD ["node", "dist/main.js"]
 ```
 
-### Layer Caching
+#### Layer Caching
+
 Copy dependency files before source code.
 
 ```dockerfile
@@ -55,10 +58,10 @@ RUN npm ci --only=production
 COPY . .
 CMD ["node", "server.js"]
 ```
-</dockerfile>
 
-<compose>
-### Docker Compose
+### Compose
+
+#### Docker Compose
 
 ```yaml
 # ❌ Bad: Version 2 (legacy), no resource limits, hardcoded secret
@@ -93,19 +96,18 @@ secrets:
 volumes:
   db_data:
 ```
-</compose>
 
-<structure>
-### Project Structure
+### Structure
+
+#### Project Structure
+
 - `Dockerfile` in service root directory
 - `.dockerignore` alongside Dockerfile
 - `docker-compose.yml` for local development
 - `docker-compose.prod.yml` for production overrides
-</structure>
 
-</best_practices>
+## Boundaries
 
-<boundaries>
 - ✅ **Always:** Multi-stage builds to separate build from runtime
 - ✅ **Always:** Non-root user in final stage
 - ✅ **Always:** Pin base image versions (e.g., `node:18-alpine3.19`)
@@ -119,4 +121,3 @@ volumes:
 - 🚫 **Never:** Use `latest` tag in production
 - 🚫 **Never:** Run as root (UID 0)
 - 🚫 **Never:** Include build tools in production image
-</boundaries>

@@ -5,13 +5,16 @@ applyTo: "**/*.agent.md"
 
 You are an expert in "Agentic Workflows" for GitHub Copilot. When creating or updating an `*.agent.md` file, you are defining a **Specialized Persona**, not a general assistant. Follow the principles below to ensure high reliability and clear role definition.
 
-<philosophy>
+## Philosophy
+
 An Agent file defines the "Who" and the "How".
+
 - **Specialization:** Do not create a "General Helper." Create distinct agents for distinct lifecycle phases: `@planner`, `@implementer`, `@reviewer`, `@security-auditor`.
 - **Inheritance:** Do not repeat general coding standards (e.g., "Use TypeScript") in the agent file. Agents automatically inherit global repo instructions and `.instructions.md` skills. Focus strictly on the behavior of this specific role.
 - **No Teaching:** Agents define behavior, not knowledge. Put language idioms and patterns in `.instructions.md` skill files, not in agent files.
-</philosophy>
-<structure>
+
+## Structure
+
 All agent files must use the `.agent.md` extension and begin with YAML frontmatter:
 
 ```yaml
@@ -31,38 +34,51 @@ handoffs:
 - **`tools` in frontmatter:** Enables which tools the agent CAN use (permission).
 - **`<tools>` in body:** Guides WHEN and WHY to use specific tools (strategy).
 - **`handoffs`:** Create sequential workflows between agents.
-</structure>
-<sections>
+
+## Sections
+
 The body below frontmatter should include these sections:
-<role>
+
+### Role
+
 **Required.** Define who the agent is and their primary goal.
+
 - **Bad:** "You are a helpful coding assistant."
 - **Good:** "You are a Senior QA Engineer specializing in Playwright E2E testing. You are skeptical, thorough, and prioritize edge-case coverage."
-</role>
-<capabilities>
+
+### Capabilities
+
 **Optional.** List specific domain expertise when the agent is a specialist. Skip for general-purpose agents.
+
 - Use for: domain experts (Python architect, React engineer, DevOps specialist)
 - Skip for: general-purpose or adaptive agents
-</capabilities>
-<tools>
+
+### Tools
+
 **Recommended.** Guide when and why to use specific tools. This is behavioral strategy, not just a list.
+
 - "Use #tool:sequentialthinking before any major refactor"
 - "Use #tool:websearch when encountering unfamiliar error codes"
-</tools>
-<boundaries>
+
+### Boundaries
+
 **Required.** Define operational rules to prevent mistakes:
+
 - ✅ **Always:** Mandatory behaviors
 - ⚠️ **Ask:** Gray areas requiring human input
 - 🚫 **Never:** Strict prohibitions
-</boundaries>
-<workflow>
+
+### Workflow
+
 **Recommended.** Define the step-by-step process the agent should follow.
-</workflow>
-<example_output>
+
+### Example Output
+
 **Optional.** Show what a good response looks like.
-</example_output>
-</sections>
-<template>
+
+## Template
+
+```markdown
 ---
 name: [agent-slug]
 description: [Action-oriented description]
@@ -71,29 +87,36 @@ handoffs:
   - label: [Next Step]
     agent: [next-agent-slug]
 ---
-<role>
+
+## Role
+
 You are a [Role Name]. Your goal is to [Specific Goal].
-</role>
-<capabilities>
+
+## Capabilities
+
 [Optional - only for specialist agents]
+
 - **[Expertise 1]:** Description
 - **[Expertise 2]:** Description
-</capabilities>
-<tools>
+
+## Tools
+
 - Use #tool:[tool-name] when [condition].
 - Use #tool:[tool-name] for [purpose].
-</tools>
-<boundaries>
+
+## Boundaries
+
 - ✅ **Always:** [Rule 1]
 - ⚠️ **Ask:** [Rule 2]
 - 🚫 **Never:** [Rule 3]
-</boundaries>
-<workflow>
+
+## Workflow
+
 1. [Step 1]
 2. [Step 2]
 3. [Step 3]
-</workflow>
-<example_output>
+
+## Example Output
+
 [Provide a snippet of the ideal response format]
-</example_output>
-</template>
+```

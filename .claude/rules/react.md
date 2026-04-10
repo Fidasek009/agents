@@ -5,11 +5,14 @@ paths:
   - "**/*.jsx"
   - "**/*.js"
 ---
-<context>
+## Context
+
 Guidelines for building scalable React applications using functional components, hooks, and component composition.
-</context>
-<best_practices>
-<components>
+
+## Best Practices
+
+### Components
+
 ```tsx
 // ❌ Bad: Class component, any type, native tags, inline styles
 class UserCard extends React.Component<any, any> {
@@ -17,7 +20,6 @@ class UserCard extends React.Component<any, any> {
     return (
       <div style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
         <h1>{this.props.name}</h1>
-      </div>
     );
   }
 }
@@ -38,19 +40,16 @@ export const UserCard = ({ name, role = 'User', onAction }: UserCardProps) => {
     <Card className="w-full max-w-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-semibold">{name}</CardTitle>
-      </CardHeader>
       <CardContent className="flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">{role}</p>
         <Button type="button" variant="secondary" size="sm" onClick={onAction}>
           View
-        </Button>
-      </CardContent>
-    </Card>
   );
 };
 ```
-</components>
-<data_fetching>
+
+### Data Fetching
+
 ```tsx
 const isError = (value: unknown): value is Error => value instanceof Error;
 
@@ -83,29 +82,32 @@ const useUserData = (userId: string) => {
   return { data, loading, error };
 };
 ```
-</data_fetching>
-<patterns>
+
+### Patterns
+
 - **Compound Components:** Related functionality (e.g., `Select` + `Select.Option`)
 - **Custom Hooks:** Extract reusable logic (data fetching, forms)
 - **Context Provider:** Dependency injection and state sharing
 - **Container/Presentational:** Separate logic from UI when complex
-</patterns>
-<structure>
+
+### Structure
+
 - `src/components/` — Reusable UI components
 - `src/features/` — Domain-specific features
 - `src/hooks/` — Shared custom hooks
 - `src/pages/` — Route-level components
 - `src/utils/` — Helper functions
 - `src/types/` — Shared TypeScript type aliases
-</structure>
-<accessibility>
+
+### Accessibility
+
 - Semantic HTML (`<main>`, `<nav>`, `<article>`)
 - ARIA attributes for interactive elements
 - Keyboard navigation support
 - Proper color contrast
-</accessibility>
-</best_practices>
-<boundaries>
+
+## Boundaries
+
 - ✅ **Always:** Functional components with hooks
 - ✅ **Always:** TypeScript `type` aliases for props and state shapes
 - ✅ **Always:** Use the project design system or shared UI primitives consistently
@@ -120,4 +122,3 @@ const useUserData = (userId: string) => {
 - 🚫 **Never:** Direct DOM manipulation (use `useRef`)
 - 🚫 **Never:** Hardcoded hex colors/pixels—use theme tokens
 - 🚫 **Never:** Prop drilling beyond 2-3 layers
-</boundaries>

@@ -12,6 +12,7 @@ Follow this strict structure:
 6. **Entry Points**: List the 2-3 main files where execution starts.
 
 Constraint Checklist:
+
 - No line numbers.
 - Never link to specific files like this: [`api/main.py`](api/main.py) - instead, just mention the file without a link: `api/main.py`.
 - No redundant explanations of standard syntax.

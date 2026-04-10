@@ -1,15 +1,19 @@
 ---
 applyTo: "**/Dockerfile,**/Dockerfile.*,**/*.dockerfile,**/docker-compose*.yml,**/docker-compose*.yaml"
 ---
-<context>
+## Context
+
 - **Immutability:** Never modify running containers; create new images for changes.
 - **Efficiency:** Minimize image size and build time (multi-stage, caching).
 - **Security:** Run as non-root, scan for vulnerabilities, use minimal base images.
 - **Portability:** Externalize configuration; ensure images run consistently everywhere.
-</context>
-<best_practices>
-<dockerfile>
+
+## Best Practices
+
+### Dockerfile
+
 ### Multi-Stage Builds
+
 Separate build dependencies from runtime.
 
 ```dockerfile
@@ -44,6 +48,7 @@ CMD ["node", "dist/main.js"]
 ```
 
 ### Layer Caching
+
 Copy dependency files before source code.
 
 ```dockerfile
@@ -54,8 +59,9 @@ RUN npm ci --omit=dev
 COPY . .
 CMD ["node", "server.js"]
 ```
-</dockerfile>
-<compose>
+
+### Compose
+
 ### Docker Compose
 
 ```yaml
@@ -91,16 +97,18 @@ secrets:
 volumes:
   db_data:
 ```
-</compose>
-<structure>
+
+### Structure
+
 ### Project Structure
+
 - `Dockerfile` in service root directory
 - `.dockerignore` alongside Dockerfile
 - `docker-compose.yml` for local development
 - `docker-compose.prod.yml` for production overrides
-</structure>
-</best_practices>
-<boundaries>
+
+## Boundaries
+
 - ✅ **Always:** Multi-stage builds to separate build from runtime
 - ✅ **Always:** Non-root user in final stage
 - ✅ **Always:** Pin base image versions (e.g., `node:24-alpine3.22`)
@@ -114,4 +122,3 @@ volumes:
 - 🚫 **Never:** Use `latest` tag in production
 - 🚫 **Never:** Run as root (UID 0)
 - 🚫 **Never:** Include build tools in production image
-</boundaries>

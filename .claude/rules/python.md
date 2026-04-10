@@ -2,15 +2,20 @@
 paths: 
   - "**/*.py"
 ---
-<context>
+## Context
+
 These guidelines cover Python-specific best practices, idioms, and anti-patterns.
-</context>
-<best_practices>
-<idioms>
-### Path Handling
+
+## Best Practices
+
+### Idioms
+
+#### Path Handling
+
 Use `pathlib` instead of `os.path`.
 
 **Bad:**
+
 ```python
 import os
 path = os.path.join(data_dir, "file.txt")
@@ -19,6 +24,7 @@ if os.path.exists(path):
 ```
 
 **Good:**
+
 ```python
 from pathlib import Path
 path = Path(data_dir) / "file.txt"
@@ -26,24 +32,29 @@ if path.exists():
     ...
 ```
 
-### String Formatting
+#### String Formatting
+
 Use **f-strings** for interpolation.
 
 **Bad:**
+
 ```python
 print("Hello, %s" % user)
 print("Hello, {}".format(user))
 ```
 
 **Good:**
+
 ```python
 print(f"Hello, {user}")
 ```
 
-### Comprehensions
+#### Comprehensions
+
 Use list/dict comprehensions for simple transformations.
 
 **Bad:**
+
 ```python
 users = []
 for u in user_list:
@@ -52,29 +63,35 @@ for u in user_list:
 ```
 
 **Good:**
+
 ```python
 users = [u.name for u in user_list if u.active]
 ```
 
-### Iteration
+#### Iteration
+
 Use `enumerate()` instead of `range(len())`. Use `zip()` for parallel iteration.
 
 **Bad:**
+
 ```python
 for i in range(len(items)):
     print(i, items[i])
 ```
 
 **Good:**
+
 ```python
 for i, item in enumerate(items):
     print(i, item)
 ```
 
-### Pattern Matching
+#### Pattern Matching
+
 Use `match`/`case` for complex conditional logic.
 
 **Bad:**
+
 ```python
 def handle(response):
     if isinstance(response, dict) and "error" in response:
@@ -88,6 +105,7 @@ def handle(response):
 ```
 
 **Good:**
+
 ```python
 def handle(response):
     match response:
@@ -100,12 +118,15 @@ def handle(response):
         case _:
             return str(response)
 ```
-</idioms>
-<typing>
-### Built-in Generics (PEP 585)
+
+### Typing
+
+#### Built-in Generics (PEP 585)
+
 Use built-in types instead of `typing` imports.
 
 **Bad:**
+
 ```python
 from typing import List, Dict, Optional
 
@@ -114,6 +135,7 @@ def process(data: Dict[str, Any]) -> Optional[int]:
 ```
 
 **Good:**
+
 ```python
 from typing import Any
 
@@ -121,10 +143,12 @@ def process(data: dict[str, Any]) -> int | None:
     return data.get("id")
 ```
 
-### Union Types (PEP 604)
+#### Union Types (PEP 604)
+
 Use `|` instead of `Union` or `Optional`.
 
 **Bad:**
+
 ```python
 from typing import Union, Optional
 
@@ -133,15 +157,18 @@ def parse(value: Union[str, int]) -> str: ...
 ```
 
 **Good:**
+
 ```python
 def find(id: int) -> User | None: ...
 def parse(value: str | int) -> str: ...
 ```
 
-### Docstrings
+#### Docstrings
+
 Follow **Google Style**. Do not duplicate type info—rely on hints.
 
 **Good:**
+
 ```python
 def calculate_tax(price: float, rate: float) -> float:
     """
@@ -159,12 +186,15 @@ def calculate_tax(price: float, rate: float) -> float:
     """
     return price * rate
 ```
-</typing>
-<classes>
-### Data Classes
+
+### Classes
+
+#### Data Classes
+
 Use `@dataclass` for data containers. It automatically has `__init__`, `__repr__`, and `__eq__`.
 
 **Good:**
+
 ```python
 from dataclasses import dataclass
 
@@ -174,10 +204,12 @@ class User:
     name: str
 ```
 
-### Properties
+#### Properties
+
 Use `@property` instead of getters/setters.
 
 **Bad:**
+
 ```python
 class Box:
     def get_width(self):
@@ -185,6 +217,7 @@ class Box:
 ```
 
 **Good:**
+
 ```python
 class Box:
     @property
@@ -192,20 +225,25 @@ class Box:
         return self._width
 ```
 
-### Magic Methods
+#### Magic Methods
+
 Implement `__repr__` for debuggability.
 
 **Good:**
+
 ```python
 def __repr__(self):
     return f"User(id={self.id}, name='{self.name}')"
 ```
-</classes>
-<error_handling>
-### Specific Exceptions
+
+### Error Handling
+
+#### Specific Exceptions
+
 Catch specific errors, not bare `Exception`.
 
 **Bad:**
+
 ```python
 try:
     process()
@@ -214,6 +252,7 @@ except Exception:
 ```
 
 **Good:**
+
 ```python
 try:
     process()
@@ -221,27 +260,33 @@ except ValueError as e:
     logger.exception("Invalid input")  # Stack trace included automatically
 ```
 
-### Logging
+#### Logging
+
 Use `logging`, not `print()`.
 
 **Bad:**
+
 ```python
 print(f"Processing user {user_id}")
 ```
 
 **Good:**
+
 ```python
 import logging
 logger = logging.getLogger(__name__)
 
 logger.info("Processing user %s", user_id)
 ```
-</error_handling>
-<resources>
-### Context Managers
+
+### Resources
+
+#### Context Managers
+
 Use `with` statements for resource cleanup.
 
 **Bad:**
+
 ```python
 conn = db.connect()
 result = conn.execute(query)
@@ -249,15 +294,18 @@ conn.close()  # Won't run if execute() raises
 ```
 
 **Good:**
+
 ```python
 with db.connect() as conn:
     result = conn.execute(query)
 ```
 
-### File I/O
+#### File I/O
+
 Use `pathlib` for file operations.
 
 **Good:**
+
 ```python
 from pathlib import Path
 
@@ -269,11 +317,13 @@ with file.open() as f:
     for line in f:
         process(line)
 ```
-</resources>
-<anti_patterns>
-### Mutable Default Arguments
+
+### Anti Patterns
+
+#### Mutable Default Arguments
 
 **Bad:**
+
 ```python
 def append(item, items=[]):
     items.append(item)
@@ -281,6 +331,7 @@ def append(item, items=[]):
 ```
 
 **Good:**
+
 ```python
 def append(item, items=None):
     if items is None:
@@ -289,9 +340,10 @@ def append(item, items=None):
     return items
 ```
 
-### Unbounded Loops
+#### Unbounded Loops
 
 **Bad:**
+
 ```python
 while True:
     result = fetch_data()
@@ -301,6 +353,7 @@ while True:
 ```
 
 **Good:**
+
 ```python
 MAX_ATTEMPTS = 10
 
@@ -315,14 +368,16 @@ else:
 
 > **Exception:** `while True` is acceptable for intentional infinite loops (event loops, servers) with graceful shutdown handling.
 
-### Hardcoded Configuration
+#### Hardcoded Configuration
 
 **Bad:**
+
 ```python
 DB_URL = "postgres://user:pass@localhost:5432/db"
 ```
 
 **Good:**
+
 ```python
 import os
 DB_URL = os.environ.get("DB_URL")
@@ -330,12 +385,12 @@ DB_URL = os.environ.get("DB_URL")
 
 > **Exception:** Constants that are truly constant and not environment-specific (e.g., mathematical constants).
 
-</anti_patterns>
-
-<testing>
+### Testing
+>
 > ⚠️ Only write tests when explicitly requested or if the codebase already includes tests.
 
-### Fixtures
+#### Fixtures
+
 ```python
 @pytest.fixture
 def db():
@@ -344,15 +399,16 @@ def db():
     conn.close()
 ```
 
-### Parametrization
+#### Parametrization
+
 ```python
 @pytest.mark.parametrize("inp,out", [(1, 2), (2, 4)])
 def test_double(inp, out):
     assert double(inp) == out
 ```
-</testing>
-</best_practices>
-<boundaries>
+
+## Boundaries
+
 - ✅ **Always:** Type hints on all function signatures
 - ✅ **Always:** `pathlib` for filesystem operations
 - ✅ **Always:** f-strings for formatting
@@ -363,4 +419,3 @@ def test_double(inp, out):
 - 🚫 **Never:** Mutable default arguments
 - 🚫 **Never:** Wildcard imports (`from x import *`)
 - 🚫 **Never:** Imports inside functions
-</boundaries>

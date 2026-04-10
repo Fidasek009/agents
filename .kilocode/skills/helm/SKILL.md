@@ -2,35 +2,38 @@
 name: helm
 description: Helm chart best practices for Kubernetes deployments, including templating, security, and maintainability.
 ---
-<context>
+## Context
+
 Apply these rules when creating or modifying Helm charts. Focus on naming conventions, security, and proper templating.
-</context>
 
-<best_practices>
+## Best Practices
 
-<naming>
-### Naming Conventions
+### Naming
+
+#### Naming Conventions
 
 **Chart Names:**
+
 - Pattern: `lowercase-with-hyphens`
 - Only `[a-z0-9-]`, start with letter
 - Directory name must match chart name
 - Examples: `nginx-ingress`, `cert-manager`
 
 **Values:**
+
 - Pattern: `camelCase`
 - Examples: `replicaCount`, `serviceAccountName`
 
 **Versioning:**
+
 - SemVer 2 format: `1.2.3`
 - `version`: Chart version
 - `appVersion`: Application version (quoted)
-</naming>
 
-<templating>
-### Templating
+#### Templating
 
 **Namespace template names:**
+
 ```yaml
 # ✅ Correct
 {{- define "chartname.fullname" }}
@@ -42,6 +45,7 @@ Apply these rules when creating or modifying Helm charts. Focus on naming conven
 ```
 
 **Input validation:**
+
 ```yaml
 # Mandatory values
 name: {{ required "serviceName is required" .Values.serviceName }}
@@ -52,12 +56,13 @@ replicas: {{ .Values.replicaCount | default 1 }}
 # Safe string handling
 value: {{ .Values.dbHost | quote }}
 ```
-</templating>
 
-<values>
-### Values File
+### Values
+
+#### Values File
 
 **Type safety:**
+
 ```yaml
 # ✅ Correct - quote strings and versions
 image:
@@ -68,12 +73,14 @@ enabled: false  # Booleans: no quotes
 ```
 
 **Documentation:**
+
 ```yaml
 # replicaCount is the number of pod replicas
 replicaCount: 3
 ```
 
 **Prefer flat over nested** (easier `--set` overrides):
+
 ```yaml
 # ✅ Good
 serverHost: "example.com"
@@ -84,12 +91,11 @@ server:
   config:
     host: "example.com"
 ```
-</values>
 
-<security>
-### Security
+#### Security
 
 **Secrets:**
+
 ```yaml
 {{- if not (lookup "v1" "Secret" .Release.Namespace "app-secret") }}
 apiVersion: v1
@@ -104,6 +110,7 @@ stringData:
 ```
 
 **Security Context (required defaults):**
+
 ```yaml
 securityContext:
   runAsNonRoot: true
@@ -112,14 +119,14 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-    - ALL
+  - ALL
 ```
 
 **RBAC:** Use least-privilege; avoid `cluster-admin` and `*` verbs.
-</security>
 
-<resources>
-### Resources & Health Checks
+### Resources
+
+#### Resources & Health Checks
 
 ```yaml
 resources:
@@ -142,10 +149,8 @@ readinessProbe:
     port: http
   initialDelaySeconds: 5
 ```
-</resources>
 
-<validation>
-### Validation
+#### Validation
 
 ```bash
 helm lint ./mychart
@@ -153,11 +158,9 @@ helm template ./mychart --debug
 helm install --dry-run --debug test ./mychart
 helm test <release-name>
 ```
-</validation>
 
-</best_practices>
+## Boundaries
 
-<boundaries>
 - ✅ **Always:** Use `lowercase-with-hyphens` for chart names
 - ✅ **Always:** Use `camelCase` for values
 - ✅ **Always:** Quote all strings in values.yaml
@@ -170,4 +173,3 @@ helm test <release-name>
 - 🚫 **Never:** Provide default passwords
 - 🚫 **Never:** Run containers as root
 - 🚫 **Never:** Use overly permissive RBAC (`*` verbs)
-</boundaries>

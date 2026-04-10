@@ -3,11 +3,14 @@ paths:
   - "**/.github/workflows/*.yml"
   - "**/.github/workflows/*.yaml"
 ---
-<context>
+## Context
+
 Guidelines for building reliable GitHub Actions workflows with proper security, caching, testing, and deployment strategies.
-</context>
-<best_practices>
-<workflow_structure>
+
+## Best Practices
+
+### Workflow Structure
+
 - Descriptive `name` and specific triggers (`on: push`, `pull_request`, `workflow_dispatch`)
 - `concurrency` to prevent race conditions
 - `permissions` with least privilege (default `contents: read`)
@@ -39,9 +42,11 @@ jobs:
           name: build-artifact
           path: dist
 ```
-</workflow_structure>
-<security>
+
+### Security
+
 **Permissions:**
+
 ```yaml
 permissions:
   contents: read
@@ -49,15 +54,19 @@ permissions:
 ```
 
 **Secrets:**
+
 - Store sensitive data in GitHub Secrets (`${{ secrets.SECRET_NAME }}`)
 - Use environment-specific secrets with approval gates
 - Never print secrets to logs
 
 **OIDC:**
+
 - Prefer OIDC over long-lived credentials for cloud auth (AWS, Azure, GCP)
-</security>
-<optimization>
+
+### Optimization
+
 **Caching:**
+
 ```yaml
 - uses: actions/cache@v4
   with:
@@ -67,6 +76,7 @@ permissions:
 ```
 
 **Matrix:**
+
 ```yaml
 strategy:
   fail-fast: false
@@ -76,11 +86,14 @@ strategy:
 ```
 
 **Checkout:**
+
 - `fetch-depth: 1` for shallow clones (most builds)
 - `fetch-depth: 0` only when full history needed
-</optimization>
-<testing>
+
+### Testing
+
 **Services:**
+
 ```yaml
 services:
   postgres:
@@ -93,9 +106,11 @@ services:
 - Integration tests with `services` for databases
 - E2E tests with Playwright/Cypress against staging
 - Publish results as GitHub Checks
-</testing>
-<deployment>
+
+### Deployment
+
 **Environments:**
+
 ```yaml
 environment:
   name: production
@@ -103,18 +118,20 @@ environment:
 ```
 
 **Strategies:**
+
 - **Rolling:** Gradual replacement (default)
 - **Blue/Green:** Instant traffic switch, easy rollback
 - **Canary:** 5-10% rollout first, monitor before full deploy
-</deployment>
-<troubleshooting>
+
+### Troubleshooting
+
 - **Not triggering:** Check `on` triggers, `branches`/`paths` filters
 - **Permission errors:** Set `permissions` explicitly, verify secrets scope
 - **Cache issues:** Use `hashFiles()` in key, add `restore-keys`
 - **Slow workflows:** Parallelize with matrix, use caching, combine commands with `&&`
-</troubleshooting>
-</best_practices>
-<boundaries>
+
+## Boundaries
+
 - ✅ **Always:** Pin actions to `@v4` or commit SHA (never `@main`)
 - ✅ **Always:** Set `permissions: contents: read` by default
 - ✅ **Always:** Use `${{ secrets.NAME }}` for sensitive data
@@ -125,4 +142,3 @@ environment:
 - 🚫 **Never:** Hardcode secrets in workflow files
 - 🚫 **Never:** Use `@main` or `@latest` for action versions
 - 🚫 **Never:** Print secrets to logs
-</boundaries> 

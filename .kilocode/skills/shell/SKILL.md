@@ -2,30 +2,30 @@
 name: shell
 description: Shell Scripting Guidelines for robust, portable Bash scripts.
 ---
-<context>
+## Context
+
 Essential patterns for writing safe, maintainable shell scripts. Focus on error handling, input validation, and security.
-</context>
 
-<best_practices>
+## Best Practices
 
-<header>
-### Mandatory Header
+### Header
+
+#### Mandatory Header
+
 ```bash
 #!/bin/bash
 set -euo pipefail  # Exit on error, unset vars, pipeline failures
 ```
-</header>
 
-<variables>
-### Variables
+#### Variables
+
 - **Always quote:** `"$var"` not `$var`
 - **Arrays for lists:** `files=("f1" "f2")` then `"${files[@]}"`
 - **Naming:** `lowercase_with_underscores`, `CONSTANTS_UPPERCASE`
 - **Constants:** `readonly MAX_RETRIES=3`
-</variables>
 
-<functions>
-### Functions
+#### Functions
+
 ```bash
 function_name() {
     local arg1="$1"
@@ -34,10 +34,9 @@ function_name() {
     return 0
 }
 ```
-</functions>
 
-<error_handling>
-### Error Handling
+#### Error Handling
+
 ```bash
 # Check commands
 if ! mkdir -p "$dir"; then
@@ -51,10 +50,11 @@ command || { echo "Error" >&2; exit 1; }
 # Cleanup trap
 trap 'rm -rf "$TEMP_DIR"' EXIT SIGINT SIGTERM
 ```
-</error_handling>
 
-<validation>
-### Input Validation
+### Validation
+
+#### Input Validation
+
 ```bash
 # Check argument count
 [[ $# -lt 2 ]] && { echo "Usage: $0 <arg1> <arg2>" >&2; exit 2; }
@@ -68,10 +68,9 @@ trap 'rm -rf "$TEMP_DIR"' EXIT SIGINT SIGTERM
 # Check file access
 [[ ! -r "$file" ]] && { echo "Error: Cannot read $file" >&2; exit 1; }
 ```
-</validation>
 
-<security>
-### Security
+#### Security
+
 ```bash
 # Require env vars
 PASSWORD="${PASSWORD:?Error: PASSWORD not set}"
@@ -80,10 +79,11 @@ PASSWORD="${PASSWORD:?Error: PASSWORD not set}"
 [[ -z "$DIR" || "$DIR" == "/" ]] && { echo "Error: Invalid DIR" >&2; exit 1; }
 rm -rf "${DIR:?}/"*
 ```
-</security>
 
-<patterns>
-### Modern Patterns
+### Patterns
+
+#### Modern Patterns
+
 ```bash
 # Use [[ ]] not [ ]
 [[ "$var" == "value" ]] && echo "Match"
@@ -103,10 +103,9 @@ for file in *.txt; do      # NOT: for file in $(ls *.txt)
     [[ -f "$file" ]] && process "$file"
 done
 ```
-</patterns>
 
-<template>
-### Template
+#### Template
+
 ```bash
 #!/bin/bash
 set -euo pipefail
@@ -128,23 +127,22 @@ main() {
 
 main "$@"
 ```
-</template>
 
-<anti_patterns>
-### Quick Reference
-| Good | Bad |
+### Anti Patterns
+
+#### Quick Reference
+
+|Good|Bad|
 |------|-----|
-| `"$var"` | `$var` |
-| `[[ ]]` | `[ ]` |
-| `$(cmd)` | `` `cmd` `` |
-| `$(<file)` | `$(cat file)` |
-| `for f in *.txt` | `for f in $(ls)` |
-| `command -v` | `which` |
-</anti_patterns>
+|`"$var"`|`$var`|
+|`[[ ]]`|`[ ]`|
+|`$(cmd)`|`` `cmd` ``|
+|`$(<file)`|`$(cat file)`|
+|`for f in *.txt`|`for f in $(ls)`|
+|`command -v`|`which`|
 
-</best_practices>
+## Boundaries
 
-<boundaries>
 - ✅ **Always:** Include `set -euo pipefail`
 - ✅ **Always:** Quote all variables (`"$var"`)
 - ✅ **Always:** Validate inputs and arguments
@@ -155,4 +153,3 @@ main "$@"
 - 🚫 **Never:** Hardcode credentials
 - 🚫 **Never:** Use `eval` with user input
 - 🚫 **Never:** Use `[ ]` or backticks
-</boundaries>
