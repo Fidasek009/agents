@@ -125,14 +125,14 @@ main "$@"
 
 ### Anti Patterns
 
-|Good|Bad|
-|------|-----|
-|`"$var"`|`$var`|
-|`[[ ]]`|`[ ]`|
-|`$(cmd)`|`` `cmd` ``|
-|`$(<file)`|`$(cat file)`|
-|`for f in *.txt`|`for f in $(ls)`|
-|`command -v`|`which`|
+| Good | Bad |
+| --- | --- |
+| `"$var"` | `$var` |
+| `[[ ]]` | `[ ]` |
+| `$(cmd)` | `` `cmd` `` |
+| `$(<file)` | `$(cat file)` |
+| `for f in *.txt` | `for f in $(ls)` |
+| `command -v` | `which` |
 
 ## Boundaries
 

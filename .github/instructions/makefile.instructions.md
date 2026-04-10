@@ -27,12 +27,12 @@ VAR += value    # Append
 
 ### Automatic Variables
 
-|Var|Meaning|
-|-----|---------|
-|`$@`|Target name|
-|`$<`|First prerequisite|
-|`$^`|All prerequisites|
-|`$?`|Newer prerequisites|
+| Var | Meaning |
+| --- | --- |
+| `$@` | Target name |
+| `$<` | First prerequisite |
+| `$^` | All prerequisites |
+| `$?` | Newer prerequisites |
 
 ```makefile
 %.o: %.c
@@ -127,13 +127,13 @@ clean: ## Clean artifacts
 
 ### Anti Patterns
 
-|Wrong|Right|
-|-------|-------|
-|Spaces for indent|TAB character|
-|`VAR = $(shell ...)`|`VAR := $(shell ...)`|
-|Missing `.PHONY`|`.PHONY: clean test`|
-|`rm file` (fails)|`rm file \|\|true`|
-|Shell var `$files`|`$$files` in recipes|
+| Wrong | Right |
+| --- | --- |
+| Spaces for indent | TAB character |
+| `VAR = $(shell ...)` | `VAR := $(shell ...)` |
+| Missing `.PHONY` | `.PHONY: clean test` |
+| `rm file` (fails) | `rm file \|\|true` |
+| Shell var `$files` | `$$files` in recipes |
 
 ## Boundaries
 

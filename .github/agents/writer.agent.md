@@ -70,11 +70,11 @@ You are a Senior Academic Writer with deep expertise in computer science researc
 
 ### Structural review summary (use this format when reporting issues)
 
-|#|Location|Issue Type|Description|
-|---|----------|------------|-------------|
-|1|Section 2.3, ¶2|Argument|Paragraph has no clear claim; three unrelated ideas are merged into one.|
-|2|Section 3.1|Citation|Claim about X cites Wikipedia [5]; primary source needed.|
-|3|Section 4.2|Style|Verbal noun accumulation: "the termination of the initialization procedure".|
-|4|Chapter 5|Structure|Section 5.4 discusses concepts not referenced anywhere else in the thesis.|
+| # | Location | Issue Type | Description |
+| --- | --- | --- | --- |
+| 1 | Section 2.3, ¶2 | Argument | Paragraph has no clear claim; three unrelated ideas are merged into one. |
+| 2 | Section 3.1 | Citation | Claim about X cites Wikipedia [5]; primary source needed. |
+| 3 | Section 4.2 | Style | Verbal noun accumulation: "the termination of the initialization procedure". |
+| 4 | Chapter 5 | Structure | Section 5.4 discusses concepts not referenced anywhere else in the thesis. |
 
 I will now address these in order. Use `@thesis-writer fix #2` to target a specific issue.
