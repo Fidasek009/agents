@@ -20,12 +20,12 @@ class UserCard extends React.Component<any, any> {
     return (
       <div style={{ padding: '20px', backgroundColor: '#f0f0f0' }}>
         <h1>{this.props.name}</h1>
+      </div>
     );
   }
 }
 
 // ✅ Good: Functional, typed, composable, Tailwind + shadcn-style UI
-
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -35,24 +35,39 @@ type UserCardProps = {
   onAction: () => void;
 };
 
-export const UserCard = ({ name, role = 'User', onAction }: UserCardProps) => {
+export const UserCard = ({ name, role = "User", onAction }: UserCardProps) => {
   return (
     <Card className="w-full max-w-sm">
       <CardHeader className="pb-2">
         <CardTitle className="text-base font-semibold">{name}</CardTitle>
+      </CardHeader>
       <CardContent className="flex items-center justify-between gap-3">
         <p className="text-sm text-muted-foreground">{role}</p>
         <Button type="button" variant="secondary" size="sm" onClick={onAction}>
           View
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 ```
 
 ### Data Fetching
 
-```tsx
-const isError = (value: unknown): value is Error => value instanceof Error;
+Prefer TanStack Query for server state. Raw `useEffect` + `fetch` is appropriate only for non-REST sources (WebSockets, SSE, browser APIs) or when a query library is not available.
 
+```tsx
+// ✅ Good: TanStack Query for server state
+import { useQuery } from "@tanstack/react-query";
+
+const useUser = (userId: string) => {
+  return useQuery({
+    queryKey: ["user", userId],
+    queryFn: () => fetch(`/api/users/${userId}`).then((r) => r.json()),
+  });
+};
+
+// ✅ Good: useEffect with AbortController when query library is not appropriate
 const useUserData = (userId: string) => {
   const [data, setData] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -69,7 +84,7 @@ const useUserData = (userId: string) => {
       } catch (err) {
         // Ignore abort errors — they are intentional cleanup, not real failures.
         if (controller.signal.aborted) return;
-        setError(isError(err) ? err : new Error(String(err)));
+        setError(err instanceof Error ? err : new Error(String(err)));
       } finally {
         if (!controller.signal.aborted) setLoading(false);
       }
@@ -114,8 +129,8 @@ const useUserData = (userId: string) => {
 - ✅ **Always:** Keep styles maintainable and centralized (no large inline style objects)
 - ✅ **Always:** Error Boundaries for error handling
 - ✅ **Always:** All dependencies in `useEffect` arrays
-- ⚠️ **Ask:** Before writing tests (use RTL + Jest if requested)
-- ⚠️ **Ask:** Before adding new npm packages
+- ⚠️ **Ask:** Before writing tests (use RTL + Vitest or Jest depending on project setup)
+- ⚠️ **Ask:** Before adding new dependencies
 - ⚠️ **Ask:** Before introducing external state-management or data-fetching libraries
 - 🚫 **Never:** Class components
 - 🚫 **Never:** `any` type—use `unknown` or specific types

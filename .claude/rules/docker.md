@@ -21,46 +21,46 @@ Separate build dependencies from runtime.
 
 ```dockerfile
 # ❌ Bad: Single stage, running as root, vague tag
-FROM node:latest
+FROM oven/bun:latest
 COPY . .
-RUN npm install
-CMD npm start
+RUN bun install
+CMD bun start
 
 # ✅ Good: Multi-stage, pinned version, non-root, optimized
 # Stage 1: Build
-FROM node:24-alpine3.22 AS builder
+FROM oven/bun:1-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 COPY . .
-RUN npm run build
+RUN bun run build
 
 # Stage 2: Runtime
-FROM node:24-alpine3.22 AS runner
+FROM oven/bun:1-alpine AS runner
 WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/package*.json ./
-RUN npm ci --omit=dev && npm cache clean --force
+COPY --from=builder /app/package.json ./
+RUN bun install --production --frozen-lockfile
 RUN chown -R appuser:appgroup /app
 USER appuser
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
   CMD wget -qO- http://localhost:3000/health || exit 1
-CMD ["node", "dist/main.js"]
+CMD ["bun", "run", "dist/index.js"]
 ```
 
 #### Layer Caching
 
-Copy dependency files before source code.
+Copy lockfile and package.json before source code to maximize cache reuse.
 
 ```dockerfile
-FROM node:24-alpine3.22
+FROM oven/bun:1-alpine
 WORKDIR /app
-COPY package*.json ./
-RUN npm ci --omit=dev
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 COPY . .
-CMD ["node", "server.js"]
+CMD ["bun", "run", "server.ts"]
 ```
 
 ### Compose
@@ -79,7 +79,7 @@ services:
 # ✅ Good: Modern format, explicit versions, secrets
 services:
   db:
-    image: postgres:15-alpine
+    image: postgres:18-alpine
     restart: always
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
@@ -114,7 +114,7 @@ volumes:
 
 - ✅ **Always:** Multi-stage builds to separate build from runtime
 - ✅ **Always:** Non-root user in final stage
-- ✅ **Always:** Pin base image versions (e.g., `node:24-alpine3.22`)
+- ✅ **Always:** Pin base image versions (e.g., `oven/bun:1-alpine`, `postgres:18-alpine`)
 - ✅ **Always:** Maintain `.dockerignore` (exclude `.git`, `node_modules`, secrets)
 - ✅ **Always:** Exec form for `CMD`/`ENTRYPOINT` (`CMD ["node", "app.js"]`)
 - ✅ **Always:** Define `HEALTHCHECK` instruction
