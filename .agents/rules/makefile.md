@@ -4,7 +4,7 @@ globs: **/Makefile, **/makefile, **/*.mk
 ---
 ## Context
 
-Essential Makefile patterns for build automation. Focus on correct syntax, proper variable usage, and common patterns.
+Makefile patterns for build automation. Correct syntax, proper variables, common patterns
 
 ## Best Practices
 
@@ -14,7 +14,7 @@ Essential Makefile patterns for build automation. Focus on correct syntax, prope
 
 ```makefile
 target: prereq
- command    # TAB before this line
+	command    # TAB before this line
 ```
 
 #### Variable Assignment
@@ -37,7 +37,7 @@ VAR += value    # Append
 
 ```makefile
 %.o: %.c
- $(CC) -c $< -o $@
+	$(CC) -c $< -o $@
 ```
 
 ### Patterns
@@ -55,7 +55,7 @@ Always declare non-file targets:
 ```makefile
 .PHONY: help
 help: ## Show help
- @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
   awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 .DEFAULT_GOAL := help
@@ -65,18 +65,18 @@ help: ## Show help
 
 ```makefile
 clean:
- rm -rf build/ || true    # Continue on error
+	rm -rf build/ || true    # Continue on error
 
 deploy:
- @[ -n "$(ENV)" ] || { echo "Error: ENV not set" >&2; exit 1; }
- ./deploy.sh $(ENV)
+	@[ -n "$(ENV)" ] || { echo "Error: ENV not set" >&2; exit 1; }
+	./deploy.sh $(ENV)
 ```
 
 #### Multi-line Commands
 
 ```makefile
 deploy:
- docker run \
+	docker run \
   -e ENV=prod \
   -v $(PWD):/app \
   image
@@ -90,13 +90,13 @@ ifndef API_KEY
 $(error API_KEY not set)
 endif
 
-# Use POSIX shell by default for portability (Alpine, minimal CI).
-# Switch to /bin/bash only if recipes use bash-specific syntax (arrays, [[ ]], etc.).
+# Use POSIX shell by default for portability (Alpine, minimal CI)
+# Switch to /bin/bash only if recipes use bash-specific syntax (arrays, [[ ]], etc.)
 SHELL := /bin/sh
 
 # Quote variables in shell
 backup:
- tar czf "backup-$$(date +%Y%m%d).tar.gz" "$(DIR)"
+	tar czf "backup-$$(date +%Y%m%d).tar.gz" "$(DIR)"
 ```
 
 ### Template
@@ -110,38 +110,38 @@ IMAGE := $(shell yq .image $(CONFIG))
 
 .PHONY: help
 help: ## Show this help
- @grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
   awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 .PHONY: build
 build: ## Build project
- docker build -t $(IMAGE) .
+	docker build -t $(IMAGE) .
 
 .PHONY: test
 test: ## Run tests
- pytest tests/
+	pytest tests/
 
 .PHONY: clean
 clean: ## Clean artifacts
- rm -rf build/ || true
+	rm -rf build/ || true
 ```
 
-### Anti Patterns
+### Anti-Patterns
 
 |Wrong|Right|
 |-------|-------|
 |Spaces for indent|TAB character|
 |`VAR = $(shell ...)`|`VAR := $(shell ...)`|
 |Missing `.PHONY`|`.PHONY: clean test`|
-|`rm file` (fails)|`rm file \|\|true`|
+|`rm file` (fails)|`rm file \|\| true`|
 |Shell var `$files`|`$$files` in recipes|
 
 ## Boundaries
 
-- ✅ **Always:** Use TAB for recipe indentation
+- ✅ **Always:** TAB for recipe indentation
 - ✅ **Always:** Declare `.PHONY` for non-file targets
-- ✅ **Always:** Include a `help` target
-- ✅ **Always:** Use `:=` for shell commands
+- ✅ **Always:** Include `help` target
+- ✅ **Always:** `:=` for shell commands
 - ✅ **Always:** Quote variables in shell commands
 - 🚫 **Never:** Hardcode secrets
 - 🚫 **Never:** Use spaces instead of TABs
