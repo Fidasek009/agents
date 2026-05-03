@@ -1,6 +1,6 @@
 ---
 name: shell
-description: Shell Scripting Guidelines for robust, portable Bash scripts.
+description: Shell Scripting Guidelines for robust, portable Bash scripts
 ---
 ## Context
 
@@ -10,21 +10,19 @@ Essential patterns for writing safe, maintainable shell scripts. Focus on error 
 
 ### Header
 
-#### Mandatory Header
-
 ```bash
 #!/bin/bash
 set -euo pipefail  # Exit on error, unset vars, pipeline failures
 ```
 
-#### Variables
+### Variables
 
 - **Always quote:** `"$var"` not `$var`
 - **Arrays for lists:** `files=("f1" "f2")` then `"${files[@]}"`
 - **Naming:** `lowercase_with_underscores`, `CONSTANTS_UPPERCASE`
 - **Constants:** `readonly MAX_RETRIES=3`
 
-#### Functions
+### Functions
 
 ```bash
 function_name() {
@@ -35,7 +33,7 @@ function_name() {
 }
 ```
 
-#### Error Handling
+### Error Handling
 
 ```bash
 # Check commands
@@ -69,7 +67,7 @@ trap 'rm -rf "$TEMP_DIR"' EXIT SIGINT SIGTERM
 [[ ! -r "$file" ]] && { echo "Error: Cannot read $file" >&2; exit 1; }
 ```
 
-#### Security
+### Security
 
 ```bash
 # Require env vars
@@ -81,8 +79,6 @@ rm -rf "${DIR:?}/"*
 ```
 
 ### Patterns
-
-#### Modern Patterns
 
 ```bash
 # Use [[ ]] not [ ]
@@ -104,7 +100,7 @@ for file in *.txt; do      # NOT: for file in $(ls *.txt)
 done
 ```
 
-#### Template
+### Template
 
 ```bash
 #!/bin/bash
@@ -129,8 +125,6 @@ main "$@"
 ```
 
 ### Anti Patterns
-
-#### Quick Reference
 
 | Good | Bad |
 | --- | --- |

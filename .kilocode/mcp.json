@@ -31,18 +31,6 @@
         "query-docs"
       ],
       "disabled": false
-    },
-    "github": {
-      "type": "streamable-http",
-      "url": "https://api.githubcopilot.com/mcp",
-      "headers": {
-        "Authorization": "Bearer <TOKEN>"
-      },
-      "alwaysAllow": [
-        "get_me",
-        "pull_request_read"
-      ],
-      "disabled": true
     }
   }
 }

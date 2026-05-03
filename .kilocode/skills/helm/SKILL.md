@@ -1,16 +1,14 @@
 ---
 name: helm
-description: Helm chart best practices for Kubernetes deployments, including templating, security, and maintainability.
+description: Helm chart best practices for Kubernetes deployments, including templating, security, and maintainability
 ---
 ## Context
 
-Apply these rules when creating or modifying Helm charts. Focus on naming conventions, security, and proper templating.
+Rules for creating or modifying Helm charts. Naming, security, templating.
 
 ## Best Practices
 
 ### Naming
-
-#### Naming Conventions
 
 **Chart Names:**
 
@@ -26,11 +24,11 @@ Apply these rules when creating or modifying Helm charts. Focus on naming conven
 
 **Versioning:**
 
-- SemVer 2 format: `1.2.3`
+- SemVer 2: `1.2.3`
 - `version`: Chart version
 - `appVersion`: Application version (quoted)
 
-#### Templating
+### Templating
 
 **Namespace template names:**
 
@@ -59,8 +57,6 @@ value: {{ .Values.dbHost | quote }}
 
 ### Values
 
-#### Values File
-
 **Type safety:**
 
 ```yaml
@@ -68,14 +64,14 @@ value: {{ .Values.dbHost | quote }}
 image:
   tag: "1.2.3"
   pullPolicy: "IfNotPresent"
-port: "8080"
+port: 8080
 enabled: false  # Booleans: no quotes
 ```
 
 **Documentation:**
 
 ```yaml
-# replicaCount is the number of pod replicas
+# replicaCount is number of pod replicas
 replicaCount: 3
 ```
 
@@ -84,7 +80,7 @@ replicaCount: 3
 ```yaml
 # ✅ Good
 serverHost: "example.com"
-serverPort: "8080"
+serverPort: 8080
 
 # ❌ Avoid
 server:
@@ -92,7 +88,7 @@ server:
     host: "example.com"
 ```
 
-#### Security
+### Security
 
 **Secrets:**
 
@@ -119,14 +115,12 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop:
-  - ALL
+      - ALL
 ```
 
-**RBAC:** Use least-privilege; avoid `cluster-admin` and `*` verbs.
+**RBAC:** Least-privilege. No `cluster-admin` or `*` verbs.
 
 ### Resources
-
-#### Resources & Health Checks
 
 ```yaml
 resources:
@@ -139,18 +133,18 @@ resources:
 
 livenessProbe:
   httpGet:
-    path: {{ .Values.healthCheckPath | default "/health" }}
+    path: {{ .Values.livenessProbe.path | default "/health" }}
     port: http
   initialDelaySeconds: 30
 
 readinessProbe:
   httpGet:
-    path: {{ .Values.healthCheckPath | default "/ready" }}
+    path: {{ .Values.readinessProbe.path | default "/ready" }}
     port: http
   initialDelaySeconds: 5
 ```
 
-#### Validation
+### Validation
 
 ```bash
 helm lint ./mychart
@@ -161,15 +155,15 @@ helm test <release-name>
 
 ## Boundaries
 
-- ✅ **Always:** Use `lowercase-with-hyphens` for chart names
-- ✅ **Always:** Use `camelCase` for values
-- ✅ **Always:** Quote all strings in values.yaml
+- ✅ **Always:** `lowercase-with-hyphens` for chart names
+- ✅ **Always:** `camelCase` for values
+- ✅ **Always:** Quote strings in values.yaml. Exception: numeric fields (ports, replica counts, resource quantities) = unquoted integers
 - ✅ **Always:** Namespace template names with chart prefix
-- ✅ **Always:** Include resource limits and health checks
+- ✅ **Always:** Resource limits + health checks
 - ✅ **Always:** Document every value with comments
-- ✅ **Always:** Use `required` for mandatory values
+- ✅ **Always:** `required` for mandatory values
 - ⚠️ **Ask:** Before using `cluster-admin` RBAC
 - 🚫 **Never:** Hardcode secrets in values or templates
 - 🚫 **Never:** Provide default passwords
 - 🚫 **Never:** Run containers as root
-- 🚫 **Never:** Use overly permissive RBAC (`*` verbs)
+- 🚫 **Never:** Overly permissive RBAC (`*` verbs)

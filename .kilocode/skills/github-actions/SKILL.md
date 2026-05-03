@@ -1,16 +1,16 @@
 ---
 name: github-actions
-description: GitHub Actions best practices for secure, efficient CI/CD pipelines.
+description: GitHub Actions best practices for secure, efficient CI/CD pipelines
 ---
 ## Context
 
-Guidelines for building reliable GitHub Actions workflows with proper security, caching, testing, and deployment strategies.
+Guidelines for building reliable GitHub Actions workflows. Security, caching, testing, deployment.
 
 ## Best Practices
 
 ### Workflow Structure
 
-- Descriptive `name` and specific triggers (`on: push`, `pull_request`, `workflow_dispatch`)
+- Descriptive `name`, specific triggers (`on: push`, `pull_request`, `workflow_dispatch`)
 - `concurrency` to prevent race conditions
 - `permissions` with least privilege (default `contents: read`)
 - `workflow_call` for reusable workflows
@@ -22,16 +22,24 @@ jobs:
     outputs:
       artifact_path: ${{ steps.package.outputs.path }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - id: package
         run: echo "path=dist.zip" >> "$GITHUB_OUTPUT"
-  
+      - uses: actions/upload-artifact@v7
+        with:
+          name: build-artifact
+          path: ${{ steps.package.outputs.path }}
+
   deploy:
+    runs-on: ubuntu-latest
     needs: build
     if: github.ref == 'refs/heads/main'
     environment: production
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
+        with:
+          name: build-artifact
+          path: dist
 ```
 
 ### Security
@@ -59,11 +67,14 @@ permissions:
 **Caching:**
 
 ```yaml
-- uses: actions/cache@v4
+- uses: oven-sh/setup-bun@v2
   with:
-    path: ~/.npm
-    key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-    restore-keys: ${{ runner.os }}-node-
+    bun-version: latest
+- uses: actions/cache@v5
+  with:
+    path: ~/.bun/install/cache
+    key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lockb') }}
+    restore-keys: ${{ runner.os }}-bun-
 ```
 
 **Matrix:**
@@ -73,7 +84,7 @@ strategy:
   fail-fast: false
   matrix:
     os: [ubuntu-latest, windows-latest]
-    node-version: [18.x, 20.x]
+    bun-version: [1.x]
 ```
 
 **Checkout:**
@@ -88,7 +99,7 @@ strategy:
 ```yaml
 services:
   postgres:
-    image: postgres:15
+    image: postgres:18
     env:
       POSTGRES_PASSWORD: test
 ```
@@ -123,11 +134,11 @@ environment:
 
 ## Boundaries
 
-- ✅ **Always:** Pin actions to `@v4` or commit SHA (never `@main`)
-- ✅ **Always:** Set `permissions: contents: read` by default
-- ✅ **Always:** Use `${{ secrets.NAME }}` for sensitive data
-- ✅ **Always:** Use `fetch-depth: 1` for checkout
-- ✅ **Always:** Use `hashFiles()` for cache keys
+- ✅ **Always:** Pin actions to specific major version tag or commit SHA (never `@main` or `@latest`)
+- ✅ **Always:** `permissions: contents: read` by default
+- ✅ **Always:** `${{ secrets.NAME }}` for sensitive data
+- ✅ **Always:** `fetch-depth: 1` for checkout unless full history needed (semantic-release, conventional-changelog, `git describe`)
+- ✅ **Always:** `hashFiles()` for cache keys
 - ⚠️ **Ask:** Before adding self-hosted runners
 - ⚠️ **Ask:** Before adding new workflow triggers
 - 🚫 **Never:** Hardcode secrets in workflow files

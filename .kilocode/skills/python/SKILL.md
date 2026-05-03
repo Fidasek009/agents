@@ -1,10 +1,10 @@
 ---
 name: python
-description: Idiomatic Python (3.10+) patterns and anti-patterns.
+description: Idiomatic Python (3.10+) patterns and anti-patterns
 ---
 ## Context
 
-These guidelines complement the General Software Engineering Principles with Python-specific idioms. They apply when writing or reviewing any Python code.
+These guidelines cover Python-specific best practices, idioms, and anti-patterns.
 
 ## Best Practices
 
