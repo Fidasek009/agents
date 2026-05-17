@@ -1,6 +1,6 @@
 ---
 name: rebase
-description: Rebase a PR branch onto its base branch and resolve conflicts correctly.
+description: Rebase a PR branch onto its base branch and resolve conflicts correctly. ALWAYS use this skill when rebasing or resolving merge conflicts.
 ---
 
 Rebase = replay your commits on top of updated base. Not a merge. Not "pick a side".
@@ -49,6 +49,13 @@ git push --force-with-lease
 | Pure formatting conflict | Take base formatting, reapply your logic |
 
 **When unsure what base change does:** read the commit that introduced it (`git log -p origin/<base-branch>`) before resolving.
+
+## Database Migration Conflicts
+
+Migrations are ordered and immutable once applied. Two rules:
+
+1. **Sequence collision** (both branches added `0067_*.sql`) — keep both files, renumber yours to the next available number.
+2. **Never edit an existing migration** — if it may already be applied anywhere, create a new compensating migration instead.
 
 ## Auto-Generated File Conflicts
 
