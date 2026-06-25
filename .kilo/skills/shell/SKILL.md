@@ -2,148 +2,41 @@
 name: shell
 description: Shell Scripting Guidelines for robust, portable Bash scripts
 ---
-## Context
 
-Essential patterns for writing safe, maintainable shell scripts. Focus on error handling, input validation, and security.
+# Shell Standards
 
-## Best Practices
+## Shell Choice
 
-### Header
+- Use POSIX `sh` for portable automation scripts.
+- Use Bash or Zsh only when the script needs shell-specific features.
+- Match the shebang to the features used by the script.
+- Use `set -eu` for portable scripts and add `pipefail` in shells that support it.
 
-```bash
-#!/bin/bash
-set -euo pipefail  # Exit on error, unset vars, pipeline failures
-```
+## Variables And Inputs
 
-### Variables
+- Quote variable expansions and command substitutions by default.
+- Use `printf` for portable formatted output.
+- Validate required arguments and environment variables before side effects.
+- Use explicit allowlists for user-controlled modes, commands, paths, and environments.
+- Use `command -v` for command detection.
+- Use arrays only in scripts that declare a shell with array support.
 
-- **Always quote:** `"$var"` not `$var`
-- **Arrays for lists:** `files=("f1" "f2")` then `"${files[@]}"`
-- **Naming:** `lowercase_with_underscores`, `CONSTANTS_UPPERCASE`
-- **Constants:** `readonly MAX_RETRIES=3`
+## Safety
 
-### Functions
+- Keep secrets in environment variables, secret stores, or mounted secret files.
+- Guard destructive operations with non-empty path checks and allowlisted directories.
+- Use temporary directories created by `mktemp -d` for intermediate files.
+- Register cleanup traps for temporary files, mounts, locks, and background processes.
+- Use explicit command arguments for dynamic behavior.
 
-```bash
-function_name() {
-    local arg1="$1"
-    local arg2="${2:-default}"
-    # Function body
-    return 0
-}
-```
+## Portability And Maintainability
 
-### Error Handling
+- Keep setup, CI, and deployment scripts idempotent.
+- Use globs directly for file iteration and handle empty matches deliberately.
+- Keep complex logic in small functions or move it to a real programming language.
+- Keep scripts independent of the caller's current working directory when they operate on repository files.
 
-```bash
-# Check commands
-if ! mkdir -p "$dir"; then
-    echo "Error message" >&2
-    exit 1
-fi
+## Verification
 
-# Or use ||
-command || { echo "Error" >&2; exit 1; }
-
-# Cleanup trap
-trap 'rm -rf "$TEMP_DIR"' EXIT SIGINT SIGTERM
-```
-
-### Validation
-
-#### Input Validation
-
-```bash
-# Check argument count
-[[ $# -lt 2 ]] && { echo "Usage: $0 <arg1> <arg2>" >&2; exit 2; }
-
-# Validate non-empty
-[[ -z "$var" ]] && { echo "Error: var is empty" >&2; exit 1; }
-
-# Validate pattern
-[[ ! "$input" =~ ^[0-9]+$ ]] && { echo "Error: Must be number" >&2; exit 1; }
-
-# Check file access
-[[ ! -r "$file" ]] && { echo "Error: Cannot read $file" >&2; exit 1; }
-```
-
-### Security
-
-```bash
-# Require env vars
-PASSWORD="${PASSWORD:?Error: PASSWORD not set}"
-
-# Validate before dangerous operations
-[[ -z "$DIR" || "$DIR" == "/" ]] && { echo "Error: Invalid DIR" >&2; exit 1; }
-rm -rf "${DIR:?}/"*
-```
-
-### Patterns
-
-```bash
-# Use [[ ]] not [ ]
-[[ "$var" == "value" ]] && echo "Match"
-
-# Modern command substitution
-result=$(command args)  # NOT: result=`command args`
-
-# Parameter expansion
-filename="${path##*/}"     # basename
-dirname="${path%/*}"       # dirname
-
-# Read files
-content=$(<file.txt)       # NOT: $(cat file.txt)
-
-# Loop over files
-for file in *.txt; do      # NOT: for file in $(ls *.txt)
-    [[ -f "$file" ]] && process "$file"
-done
-```
-
-### Template
-
-```bash
-#!/bin/bash
-set -euo pipefail
-
-readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-readonly LOG_FILE="${LOG_FILE:-/var/log/script.log}"
-
-log() { echo "[$(date '+%Y-%m-%d %H:%M:%S')] $*" | tee -a "$LOG_FILE"; }
-cleanup() { log "Cleanup"; rm -rf "$TEMP_DIR"; }
-
-main() {
-    [[ $# -lt 1 ]] && { echo "Usage: $0 <arg>" >&2; exit 2; }
-    
-    local arg="$1"
-    trap cleanup EXIT SIGINT SIGTERM
-    
-    log "Processing $arg"
-}
-
-main "$@"
-```
-
-### Anti Patterns
-
-| Good | Bad |
-| --- | --- |
-| `"$var"` | `$var` |
-| `[[ ]]` | `[ ]` |
-| `$(cmd)` | `` `cmd` `` |
-| `$(<file)` | `$(cat file)` |
-| `for f in *.txt` | `for f in $(ls)` |
-| `command -v` | `which` |
-
-## Boundaries
-
-- ✅ **Always:** Include `set -euo pipefail`
-- ✅ **Always:** Quote all variables (`"$var"`)
-- ✅ **Always:** Validate inputs and arguments
-- ✅ **Always:** Use `[[ ]]` for tests
-- ✅ **Always:** Use `$(cmd)` for substitution
-- ✅ **Always:** Add cleanup traps
-- ✅ **Always:** Run `shellcheck` before committing
-- 🚫 **Never:** Hardcode credentials
-- 🚫 **Never:** Use `eval` with user input
-- 🚫 **Never:** Use `[ ]` or backticks
+- Run `shellcheck` on changed scripts when available.
+- Test scripts from a clean environment when they depend on exported variables, PATH, current directory, or platform tools.

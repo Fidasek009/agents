@@ -1,9 +1,9 @@
 ---
-name: e2e-testing-patterns
+name: e2e-testing
 description: Master end-to-end testing with Playwright to build reliable test suites that catch bugs, improve confidence, and enable fast deployment. Use when implementing E2E tests, debugging flaky tests, or establishing testing standards.
 ---
 
-# E2E Testing Patterns
+# E2E Testing
 
 Build reliable, fast, and maintainable end-to-end test suites that provide confidence to ship code quickly and catch regressions before users do.
 
@@ -391,13 +391,13 @@ test("form is accessible", async ({ page }) => {
 
 ```typescript
 // ❌ Bad selectors
-cy.get(".btn.btn-primary.submit-button").click();
-cy.get("div > form > div:nth-child(2) > input").type("text");
+page.locator(".btn.btn-primary.submit-button").click();
+page.locator("div > form > div:nth-child(2) > input").fill("text");
 
 // ✅ Good selectors
-cy.getByRole("button", { name: "Submit" }).click();
-cy.getByLabel("Email address").type("user@example.com");
-cy.get('[data-testid="email-input"]').type("user@example.com");
+page.getByRole("button", { name: "Submit" }).click();
+page.getByLabel("Email address").fill("user@example.com");
+page.getByTestId("email-input").fill("user@example.com");
 ```
 
 ## Common Pitfalls
@@ -412,14 +412,15 @@ cy.get('[data-testid="email-input"]').type("user@example.com");
 
 ## Debugging Failing Tests
 
-```typescript
-// Playwright debugging
-// 1. Run in headed mode
+```bash
+# 1. Run in headed mode
 npx playwright test --headed
 
-// 2. Run in debug mode
+# 2. Run in debug mode
 npx playwright test --debug
+```
 
+```typescript
 // 3. Use trace viewer
 await page.screenshot({ path: 'screenshot.png' });
 await page.video()?.saveAs('video.webm');
