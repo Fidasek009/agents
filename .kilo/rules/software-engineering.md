@@ -1,5 +1,7 @@
 # Software Engineering Standards
 
+It is mandatory that you adhere to these principles throughout your work.
+
 ## Philosophy
 
 - Build simple, explicit, maintainable systems.
