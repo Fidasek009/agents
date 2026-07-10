@@ -2,5 +2,8 @@
   "$schema": "https://app.kilo.ai/config.json",
   "plugin": [
     "opencode-wakatime"
-  ]
+  ],
+  "commit_message": {
+    "prompt": "- Match recent repository commit style and keep the subject short and specific.\n- Use a body only for non-obvious context the subject and diff cannot show; keep it brief.\n- End every agent-created commit with `Co-Authored-By: Kilo <noreply@kilo.ai>`.\n- Include `Fixes <issue>` when resolving a known issue; use `Refs <issue>` when it remains open.\n- Replace customer names, user data, and PII with the technical symptom and issue ID."
+  }
 }

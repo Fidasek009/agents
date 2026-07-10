@@ -13,12 +13,6 @@
       "skillPath": "caveman/SKILL.md",
       "computedHash": "a818cdc41dcfaa50dd891c5cb5e5705968338de02e7e37949ca56e8c30ad4176"
     },
-    "commit": {
-      "source": "getsentry/skills",
-      "sourceType": "github",
-      "skillPath": "skills/commit/SKILL.md",
-      "computedHash": "4fa90a8da375e651dc9d7514ce79ea2c3eaa069a86be366c61b0c4f9d11c97cf"
-    },
     "dispatching-parallel-agents": {
       "source": "obra/superpowers",
       "sourceType": "github",
