@@ -10,8 +10,8 @@ It is mandatory that you adhere to these principles throughout your work.
 - Keep behavior consistent with the surrounding codebase.
 - Make decisions from evidence gathered in code, tests, docs, logs, or authoritative sources.
 - Reuse established code in the codebase and mature packages for commodity problems.
-- Choose tools, abstractions, and patterns by fit, reuse, and maintenance cost. Prefer the simplest reusable option that does the job well; add specialized pieces only when their benefit outweighs the extra surface area they create.
-- Apply KISS, YAGNI, and DRY strictly.
+- Choose tools and abstractions for demonstrated needs. Prefer the simplest correct implementation; add reusable structure when it reduces duplicated knowledge or clarifies ownership.
+- Do not add speculative flexibility, configuration, or extension points. A little repetition is preferable to coupling unrelated concepts.
 - Prefer boring, reversible decisions over clever or speculative ones.
 
 ## Problem Solving
@@ -40,8 +40,8 @@ It is mandatory that you adhere to these principles throughout your work.
 - Follow existing project patterns for structure, naming, errors, logging, tests, and configuration.
 - Extend established conventions before introducing new ones.
 - Keep related code shaped the same way across the codebase.
-- Update docs, rules, generated types, schemas, and tests when behavior or contracts change.
-- Remove dead code, stale docs, unused branches, and accidental complexity while working in an area.
+- Update docs, rules, generated types, schemas, and tests made inaccurate by the change.
+- Keep cleanup within the requested scope or necessary to implement it safely. Report unrelated opportunities separately; do not edit during read-only tasks.
 
 ## Dependencies And Reuse
 
@@ -65,32 +65,18 @@ It is mandatory that you adhere to these principles throughout your work.
 ## Correctness And Safety
 
 - Validate untrusted input at boundaries.
+- Add internal checks only for distinct invariants or concrete failure modes, not to repeat validation already guaranteed by the caller or type system.
 - Keep secrets and environment-specific credentials out of source code.
 - Make operational changes reversible, observable, and scoped.
 - Treat security, privacy, and data safety as baseline requirements.
 - Use least privilege for credentials, permissions, tokens, services, and infrastructure.
 
-## Text Economy
-
-- Use the fewest words that preserve correctness, intent, and useful context.
-- Let names, types, signatures, structured fields, stack traces, and nearby code carry self-evident context.
-- Prefer precise nouns and verbs over boilerplate, narration, reviewer notes, and status commentary.
-
-## Comments And Documentation
-
-- Make ordinary code self-explanatory through names and structure; improve unclear code before explaining it with comments.
-- Write comments and docstrings only for durable context: non-obvious constraints, tradeoffs, product rules, operational reasons, invariants, failure modes, and edge cases.
-- Keep comments short: one line preferred, two lines maximum; phrase them around stable product, operational, or technical context.
-- Reserve parameter, return, field, and control-flow descriptions for non-obvious contracts.
-- Keep docs task-oriented and dense: purpose, constraints, commands, decisions, and gotchas.
-- Keep change history in git history, commit messages, pull requests, and changelogs.
-- Use a comment when deleting it would force the reader to inspect git history or ask a teammate.
-- Keep public docs and agent-facing project instructions aligned with the code.
-
 ## Verification
 
 - Run the smallest relevant verification first, then broaden based on risk.
+- Complete required checks; repeat or broaden them only after relevant changes, failures, or unresolved concerns. Match claims to what was actually verified.
 - Add or update tests for changed behavior, bug fixes, and regression-prone paths.
 - Keep tests deterministic and behavior-focused.
 - Treat type checks, lint, formatting, tests, and CI as quality gates.
 - Report verification commands and results when finishing implementation work.
+- Inspect the diff for redundant comments, duplicated checks, speculative abstractions, and tests without distinct coverage. No cleanup is needed when the change is already clear and sufficient.

@@ -1,1 +1,0 @@
-You have skills available which provide specialized knowledge for specific technologies or domains. Always check and load the relevant skills before proceeding with tasks that involve those technologies or expertise.

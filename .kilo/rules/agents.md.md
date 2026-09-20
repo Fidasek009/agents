@@ -1,1 +1,1 @@
-Keep AGENTS.md files accurate and up to date with project-specific information. If a AGENTS.md file contradicts the code, tooling, commands, or workflow, update the AGENTS.md file to match the project.
+Update existing AGENTS.md instructions made inaccurate by the current change. Report unrelated contradictions separately. During read-only tasks, report discrepancies without editing files.
