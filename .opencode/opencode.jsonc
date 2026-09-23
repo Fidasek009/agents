@@ -1,0 +1,77 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": [
+    "opencode-wakatime",
+    "opencode-rules@latest"
+  ],
+  "mcp": {
+    "searxng": {
+      "type": "local",
+      "enabled": true,
+      "command": ["npx", "-y", "mcp-searxng"],
+      "environment": {
+        "SEARXNG_URL": "https://searx.salonek.org"
+      }
+    },
+    "context7": {
+      "type": "local",
+      "enabled": true,
+      "command": ["npx", "-y", "@upstash/context7-mcp"]
+    }
+  },
+  "provider": {
+    "e-infra": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "E-INFRA",
+      "options": {
+        "baseURL": "https://llm.ai.e-infra.cz/v1"
+      },
+      "models": {
+        "kimi-k3": {
+          "name": "Kimi K3",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 48000
+          }
+        },
+        "glm-5.3": {
+          "name": "GLM 5.3",
+          "modalities": {
+            "input": ["text"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 64000
+          }
+        },
+        "qwen3.8-27b": {
+          "name": "Qwen 3.8 27B",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 256000,
+            "output": 32000
+          }
+        },
+        "qwen3.8-flash-next": {
+          "name": "Qwen 3.8 Flash",
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 256000,
+            "output": 48000
+          }
+        }
+      }
+    }
+  }
+}
