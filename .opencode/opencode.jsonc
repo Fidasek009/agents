@@ -1,5 +1,22 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "model": "e-infra/kimi-k3",
+  "small_model": "e-infra/qwen3.8-27b",
+  "agent": {
+    "build": {
+      "model": "e-infra/kimi-k3",
+      "variant": "max"
+    },
+    "title": {
+      "model": "e-infra/qwen3.8-27b"
+    },
+    "summary": {
+      "model": "e-infra/qwen3.8-27b"
+    },
+    "compaction": {
+      "model": "e-infra/qwen3.8-flash-next"
+    }
+  },
   "plugin": [
     "opencode-wakatime",
     "opencode-rules@latest"
@@ -29,6 +46,16 @@
       "models": {
         "kimi-k3": {
           "name": "Kimi K3",
+          "family": "kimi-k3",
+          "options": {
+            "reasoningEffort": "max",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 3,
+            "output": 15,
+            "cache_read": 0.3
+          },
           "modalities": {
             "input": ["text", "image"],
             "output": ["text"]
@@ -36,10 +63,26 @@
           "limit": {
             "context": 1000000,
             "output": 48000
+          },
+          "variants": {
+            "low": {"reasoningEffort": "low"},
+            "high": {"reasoningEffort": "high"},
+            "max": {"reasoningEffort": "max"}
           }
         },
         "glm-5.3": {
           "name": "GLM 5.3",
+          "family": "glm",
+          "options": {
+            "reasoningEffort": "max",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write": 0
+          },
           "modalities": {
             "input": ["text"],
             "output": ["text"]
@@ -47,10 +90,26 @@
           "limit": {
             "context": 1000000,
             "output": 64000
+          },
+          "variants": {
+            "low": {"reasoningEffort": "low"},
+            "high": {"reasoningEffort": "high"},
+            "max": {"reasoningEffort": "max"}
           }
         },
         "qwen3.8-27b": {
           "name": "Qwen 3.8 27B",
+          "family": "qwen",
+          "options": {
+            "reasoningEffort": "xhigh",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 0.45,
+            "output": 3.2,
+            "cache_read": 0.05,
+            "cache_write": 0.5625
+          },
           "modalities": {
             "input": ["text", "image"],
             "output": ["text"]
@@ -58,10 +117,26 @@
           "limit": {
             "context": 256000,
             "output": 32000
+          },
+          "variants": {
+            "low": {"reasoningEffort": "low"},
+            "medium": {"reasoningEffort": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh"}
           }
         },
         "qwen3.8-flash-next": {
           "name": "Qwen 3.8 Flash",
+          "family": "qwen",
+          "options": {
+            "reasoningEffort": "xhigh",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 0.15,
+            "output": 0.47,
+            "cache_read": 0.016,
+            "cache_write": 0.2
+          },
           "modalities": {
             "input": ["text", "image"],
             "output": ["text"]
@@ -69,6 +144,11 @@
           "limit": {
             "context": 256000,
             "output": 48000
+          },
+          "variants": {
+            "low": {"reasoningEffort": "low"},
+            "medium": {"reasoningEffort": "medium"},
+            "xhigh": {"reasoningEffort": "xhigh"}
           }
         }
       }
