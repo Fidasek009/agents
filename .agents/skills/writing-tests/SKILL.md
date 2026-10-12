@@ -5,23 +5,15 @@ description: Use when deciding whether a change needs tests, selecting test laye
 
 # Writing tests
 
-Prefer fewer tests that catch important defects. Reuse existing coverage before
-adding tests. There is no required order for writing tests and production code.
-This skill guides verification; it grants no permissions and does not override higher-priority instructions.
+Prefer fewer tests that catch important defects. Reuse existing coverage before adding tests. There is no required order for writing tests and production code. This skill guides verification; it grants no permissions and does not override higher-priority instructions.
 
 ## Decide what needs protection
 
-Before adding a test, name the observable contract, realistic defect, existing
-coverage, and distinct protection the test adds. Reuse adequate coverage. Covered
-refactors, trivial forwarding, and incidental copy changes do not need new tests.
-Use schema, static, or manual checks for docs and non-runtime config rather than
-tests that assert source text exists.
+Before adding a test, name the observable contract, realistic defect, existing coverage, and distinct protection the test adds. Reuse adequate coverage. Covered refactors, trivial forwarding, and incidental copy changes do not need new tests. Use schema, static, or manual checks for docs and non-runtime config rather than tests that assert source text exists.
 
 ## Choose the scope
 
-Use the smallest scope that exposes the defect without mocking away the behavior
-under test. Add broader coverage only for distinct integration or user-experience
-risks, not to repeat the same cases at every layer.
+Use the smallest scope that exposes the defect without mocking away the behavior under test. Add broader coverage only for distinct integration or user-experience risks, not to repeat the same cases at every layer.
 
 | Layer | Purpose |
 |-------|---------|
@@ -29,12 +21,9 @@ risks, not to repeat the same cases at every layer.
 | Integration | Verify real components agree and cooperate across a boundary. |
 | E2E | Verify a user can accomplish an important task through the assembled application. |
 
-Success, boundaries, misuse, and environmental failures can matter at any layer.
-Select them by the changed behavior and risk; do not fill a mandatory matrix.
-Keep E2E focused on critical journeys and selected browser or recovery risks.
+Success, boundaries, misuse, and environmental failures can matter at any layer. Select them by the changed behavior and risk; do not fill a mandatory matrix. Keep E2E focused on critical journeys and selected browser or recovery risks.
 
-Frontend code does not need a test per component, hook, or page. Test important,
-unprotected client-owned behavior. A runner such as Vitest is not a test layer.
+Frontend code does not need a test per component, hook, or page. Test important, unprotected client-owned behavior. A runner such as Vitest is not a test layer.
 
 ## Essential rules
 
@@ -49,15 +38,9 @@ unprotected client-owned behavior. A runner such as Vitest is not a test layer.
 
 ## Verify and stop
 
-Run focused checks, then broaden according to risk. Investigate unexpected
-failures and warnings without hiding pre-existing issues. Report checks actually
-run, results, and material verification gaps; do not claim an unobserved
-reproduction.
+Run focused checks, then broaden according to risk. Investigate unexpected failures and warnings without hiding pre-existing issues. Report checks actually run, results, and material verification gaps; do not claim an unobserved reproduction.
 
-Stop adding tests when the changed contract and important failure modes are
-protected and no concrete unprotected risk remains in scope. Remove redundancy
-introduced by the current work, not unrelated existing tests. Multiple assertions
-can describe one coherent outcome.
+Stop adding tests when the changed contract and important failure modes are protected and no concrete unprotected risk remains in scope. Remove redundancy introduced by the current work, not unrelated existing tests. Multiple assertions can describe one coherent outcome.
 
 ## References
 
