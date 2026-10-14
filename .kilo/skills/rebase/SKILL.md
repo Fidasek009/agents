@@ -8,8 +8,8 @@ Rebase = replay your commits on top of updated base. Not a merge. Not "pick a si
 ## Mental Model
 
 Each conflict = git stopped mid-replay of ONE of your commits. At that point:
-- **Incoming (theirs)** = base branch — new ground truth, already merged, already reviewed
-- **Current (yours)** = your commit being replayed — the intent you must preserve
+- **Incoming/ours (`<<<<<<< HEAD`)** = base branch — new ground truth, already merged, already reviewed
+- **Current/theirs** = your commit being replayed — the intent you must preserve
 
 Ask: "Given the base now looks like THIS, what should MY change look like?"
 Never: "whose code wins?" — wrong question. Both sides may be partially correct.
@@ -17,8 +17,9 @@ Never: "whose code wins?" — wrong question. Both sides may be partially correc
 ## Flow
 
 ```bash
-# 1. Find your base branch — check PR description or ask
-git log --oneline HEAD..origin/<base-branch>   # see what you're rebasing
+# 1. Determine the base branch — MANDATORY, do this before anything else
+gh pr view --json baseRefName --jq '.baseRefName'
+# If no PR exists, ask the user. NEVER assume 'main' or 'master'.
 
 # 2. Fetch latest base
 git fetch origin
@@ -59,7 +60,7 @@ Migrations are ordered and immutable once applied. Two rules:
 
 ## Auto-Generated File Conflicts
 
-Never hand-edit generated files (lock files, API clients, protobuf outputs, etc.). Accept either side to clear markers, run the project's generator, then `git add`.
+Never hand-edit generated files (lock files, API clients, protobuf outputs, etc.). Accept either side at your discretion — the choice doesn't matter since the file will be regenerated — then run the project's generator (or relevant build step) and `git add` the result.
 
 ## Abort If Wrong
 
@@ -71,5 +72,6 @@ Abort when: conflict unclear, or you don't understand what the base change did.
 
 ## Anti-Patterns
 
+- **Do not assume the base branch** — always run `gh pr view` first; PRs often target `dev`, `staging`, or a feature branch, not `main`
 - **Do not rebase directly onto remote base without fetching first** — replays onto stale history
 - **Do not rebase shared branches** — rewrites history; only safe on your own PR branch
