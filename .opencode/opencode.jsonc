@@ -97,6 +97,33 @@
             "max": {"reasoningEffort": "max"}
           }
         },
+        "deepseek-v4.1-flash": {
+          "name": "DeepSeek V4.1 Flash",
+          "family": "deepseek",
+          "options": {
+            "reasoningEffort": "max",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache_read": 0.003,
+            "cache_write": 0
+          },
+          "modalities": {
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 1000000,
+            "output": 384000
+          },
+          "variants": {
+            "low": {"reasoningEffort": "low"},
+            "high": {"reasoningEffort": "high"},
+            "max": {"reasoningEffort": "max"}
+          }
+        },
         "qwen3.8-27b": {
           "name": "Qwen 3.8 27B",
           "family": "qwen",
