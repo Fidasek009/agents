@@ -37,7 +37,7 @@
   "providers": {
     "e-infra": {
       "name": "E-INFRA",
-      "package": "aisdk:@ai-sdk/openai",
+      "package": "aisdk:@ai-sdk/openai-compatible",
       "settings": {
         "baseURL": "https://llm.ai.e-infra.cz/v1"
       },
