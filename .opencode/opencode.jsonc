@@ -1,11 +1,13 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "model": "e-infra/kimi-k3",
-  "small_model": "e-infra/qwen3.8-27b",
-  "agent": {
+  "model": "e-infra/deepseek-v4.1-flash",
+  "agents": {
     "build": {
-      "model": "e-infra/kimi-k3",
-      "variant": "max"
+      "model": {
+        "providerID": "e-infra",
+        "model": "deepseek-v4.1-flash",
+        "variant": "high"
+      }
     },
     "title": {
       "model": "e-infra/qwen3.8-27b"
@@ -14,49 +16,52 @@
       "model": "e-infra/qwen3.8-27b"
     },
     "compaction": {
-      "model": "e-infra/qwen3.8-flash-next"
+      "model": "e-infra/deepseek-v4.1-flash"
     }
   },
-  "plugin": [
+  "plugins": [
     "opencode-wakatime",
-    "opencode-rules@latest"
+    "opencode-rules"
   ],
   "mcp": {
-    "searxng": {
-      "type": "local",
-      "enabled": true,
-      "command": ["npx", "-y", "mcp-searxng"],
-      "environment": {
-        "SEARXNG_URL": "https://searx.salonek.org"
+    "servers": {
+      "searxng": {
+        "type": "local",
+        "command": ["npx", "-y", "mcp-searxng"],
+        "environment": {
+          "SEARXNG_URL": "https://searx.salonek.org"
+        }
+      },
+      "context7": {
+        "type": "local",
+        "command": ["npx", "-y", "@upstash/context7-mcp"]
       }
-    },
-    "context7": {
-      "type": "local",
-      "enabled": true,
-      "command": ["npx", "-y", "@upstash/context7-mcp"]
     }
   },
-  "provider": {
+  "providers": {
     "e-infra": {
-      "npm": "@ai-sdk/openai-compatible",
       "name": "E-INFRA",
-      "options": {
+      "package": "aisdk:@ai-sdk/openai",
+      "settings": {
         "baseURL": "https://llm.ai.e-infra.cz/v1"
       },
       "models": {
         "kimi-k3": {
           "name": "Kimi K3",
           "family": "kimi-k3",
-          "options": {
+          "settings": {
             "reasoningEffort": "max",
             "textVerbosity": "low"
           },
           "cost": {
             "input": 3,
             "output": 15,
-            "cache_read": 0.3
+            "cache": {
+              "read": 0.3
+            }
           },
-          "modalities": {
+          "capabilities": {
+            "tools": true,
             "input": ["text", "image"],
             "output": ["text"]
           },
@@ -64,26 +69,29 @@
             "context": 1000000,
             "output": 48000
           },
-          "variants": {
-            "low": {"reasoningEffort": "low"},
-            "high": {"reasoningEffort": "high"},
-            "max": {"reasoningEffort": "max"}
-          }
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "high", "settings": {"reasoningEffort": "high"}},
+            {"id": "max", "settings": {"reasoningEffort": "max"}}
+          ]
         },
         "glm-5.3": {
           "name": "GLM 5.3",
           "family": "glm",
-          "options": {
+          "settings": {
             "reasoningEffort": "max",
             "textVerbosity": "low"
           },
           "cost": {
             "input": 1.4,
             "output": 4.4,
-            "cache_read": 0.26,
-            "cache_write": 0
+            "cache": {
+              "read": 0.26,
+              "write": 0
+            }
           },
-          "modalities": {
+          "capabilities": {
+            "tools": true,
             "input": ["text"],
             "output": ["text"]
           },
@@ -91,26 +99,29 @@
             "context": 1000000,
             "output": 64000
           },
-          "variants": {
-            "low": {"reasoningEffort": "low"},
-            "high": {"reasoningEffort": "high"},
-            "max": {"reasoningEffort": "max"}
-          }
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "high", "settings": {"reasoningEffort": "high"}},
+            {"id": "max", "settings": {"reasoningEffort": "max"}}
+          ]
         },
         "deepseek-v4.1-flash": {
           "name": "DeepSeek V4.1 Flash",
           "family": "deepseek",
-          "options": {
-            "reasoningEffort": "max",
+          "settings": {
+            "reasoningEffort": "high",
             "textVerbosity": "low"
           },
           "cost": {
             "input": 0.15,
             "output": 0.6,
-            "cache_read": 0.003,
-            "cache_write": 0
+            "cache": {
+              "read": 0.003,
+              "write": 0
+            }
           },
-          "modalities": {
+          "capabilities": {
+            "tools": true,
             "input": ["text", "image"],
             "output": ["text"]
           },
@@ -118,26 +129,29 @@
             "context": 1000000,
             "output": 384000
           },
-          "variants": {
-            "low": {"reasoningEffort": "low"},
-            "high": {"reasoningEffort": "high"},
-            "max": {"reasoningEffort": "max"}
-          }
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "high", "settings": {"reasoningEffort": "high"}},
+            {"id": "max", "settings": {"reasoningEffort": "max"}}
+          ]
         },
         "qwen3.8-27b": {
           "name": "Qwen 3.8 27B",
           "family": "qwen",
-          "options": {
+          "settings": {
             "reasoningEffort": "xhigh",
             "textVerbosity": "low"
           },
           "cost": {
             "input": 0.45,
             "output": 3.2,
-            "cache_read": 0.05,
-            "cache_write": 0.5625
+            "cache": {
+              "read": 0.05,
+              "write": 0.5625
+            }
           },
-          "modalities": {
+          "capabilities": {
+            "tools": true,
             "input": ["text", "image"],
             "output": ["text"]
           },
@@ -145,26 +159,29 @@
             "context": 256000,
             "output": 32000
           },
-          "variants": {
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "xhigh": {"reasoningEffort": "xhigh"}
-          }
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "medium", "settings": {"reasoningEffort": "medium"}},
+            {"id": "xhigh", "settings": {"reasoningEffort": "xhigh"}}
+          ]
         },
         "qwen3.8-flash-next": {
           "name": "Qwen 3.8 Flash",
           "family": "qwen",
-          "options": {
+          "settings": {
             "reasoningEffort": "xhigh",
             "textVerbosity": "low"
           },
           "cost": {
             "input": 0.15,
             "output": 0.47,
-            "cache_read": 0.016,
-            "cache_write": 0.2
+            "cache": {
+              "read": 0.016,
+              "write": 0.2
+            }
           },
-          "modalities": {
+          "capabilities": {
+            "tools": true,
             "input": ["text", "image"],
             "output": ["text"]
           },
@@ -172,11 +189,81 @@
             "context": 256000,
             "output": 48000
           },
-          "variants": {
-            "low": {"reasoningEffort": "low"},
-            "medium": {"reasoningEffort": "medium"},
-            "xhigh": {"reasoningEffort": "xhigh"}
-          }
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "medium", "settings": {"reasoningEffort": "medium"}},
+            {"id": "xhigh", "settings": {"reasoningEffort": "xhigh"}}
+          ]
+        }
+      }
+    },
+    "byteplus-plan": {
+      "name": "BytePlus",
+      "package": "aisdk:@ai-sdk/openai",
+      "env": ["ARK_API_KEY"],
+      "settings": {
+        "baseURL": "https://ark.ap-southeast.bytepluses.com/api/coding/v3"
+      },
+      "models": {
+        "glm-5.3-flash": {
+          "name": "GLM 5.3 Flash",
+          "family": "glm",
+          "settings": {
+            "reasoningEffort": "max",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 0.15,
+            "output": 0.5,
+            "cache": {
+              "read": 0.03,
+              "write": 0
+            }
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 1048576,
+            "output": 131072
+          },
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "high", "settings": {"reasoningEffort": "high"}},
+            {"id": "max", "settings": {"reasoningEffort": "max"}}
+          ]
+        },
+        "deepseek-v4.1-flash": {
+          "name": "DeepSeek V4.1 Flash",
+          "family": "deepseek",
+          "settings": {
+            "reasoningEffort": "high",
+            "textVerbosity": "low"
+          },
+          "cost": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache": {
+              "read": 0.003,
+              "write": 0
+            }
+          },
+          "capabilities": {
+            "tools": true,
+            "input": ["text", "image"],
+            "output": ["text"]
+          },
+          "limit": {
+            "context": 1048576,
+            "output": 393216
+          },
+          "variants": [
+            {"id": "low", "settings": {"reasoningEffort": "low"}},
+            {"id": "high", "settings": {"reasoningEffort": "high"}},
+            {"id": "max", "settings": {"reasoningEffort": "max"}}
+          ]
         }
       }
     }
