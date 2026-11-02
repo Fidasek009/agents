@@ -3,11 +3,7 @@
   "model": "e-infra/deepseek-v4.1-flash",
   "agents": {
     "build": {
-      "model": {
-        "providerID": "e-infra",
-        "model": "deepseek-v4.1-flash",
-        "variant": "high"
-      }
+      "model": "e-infra/deepseek-v4.1-flash"
     },
     "title": {
       "model": "e-infra/qwen3.8-27b"
@@ -57,7 +53,8 @@
             "input": 3,
             "output": 15,
             "cache": {
-              "read": 0.3
+              "read": 0.3,
+              "write": 0
             }
           },
           "capabilities": {
@@ -200,7 +197,6 @@
     "byteplus-plan": {
       "name": "BytePlus",
       "package": "aisdk:@ai-sdk/openai",
-      "env": ["ARK_API_KEY"],
       "settings": {
         "baseURL": "https://ark.ap-southeast.bytepluses.com/api/coding/v3"
       },
@@ -235,18 +231,19 @@
             {"id": "max", "settings": {"reasoningEffort": "max"}}
           ]
         },
-        "deepseek-v4.1-flash": {
-          "name": "DeepSeek V4.1 Flash",
+        "deepseek-v4.1-flash-economy": {
+          "modelID": "deepseek-v4-1-flash-economy-261017",
+          "name": "DeepSeek V4.1 Flash Economy",
           "family": "deepseek",
           "settings": {
             "reasoningEffort": "high",
             "textVerbosity": "low"
           },
           "cost": {
-            "input": 0.15,
-            "output": 0.6,
+            "input": 0.12,
+            "output": 0.48,
             "cache": {
-              "read": 0.003,
+              "read": 0.002,
               "write": 0
             }
           },
