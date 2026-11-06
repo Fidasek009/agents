@@ -42,18 +42,18 @@
         "baseURL": "https://llm.ai.e-infra.cz/v1"
       },
       "models": {
-        "kimi-k3": {
-          "name": "Kimi K3",
+        "kimi-k3.1-pro": {
+          "name": "Kimi K3.1 Pro",
           "family": "kimi-k3",
           "settings": {
             "reasoningEffort": "max",
             "textVerbosity": "low"
           },
           "cost": {
-            "input": 3,
-            "output": 15,
+            "input": 2,
+            "output": 10,
             "cache": {
-              "read": 0.3,
+              "read": 0.2,
               "write": 0
             }
           },
