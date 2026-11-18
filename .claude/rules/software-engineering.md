@@ -11,7 +11,7 @@ It is mandatory that you adhere to these principles throughout your work.
 - Make decisions from evidence gathered in code, tests, docs, logs, or authoritative sources.
 - Reuse established code in the codebase and mature packages for commodity problems.
 - Choose tools, abstractions, and patterns by fit, reuse, and maintenance cost. Prefer the simplest reusable option that does the job well; add specialized pieces only when their benefit outweighs the extra surface area they create.
-- Apply KISS, YAGNI, and DRY strictly.
+- Apply KISS and YAGNI strictly. Apply DRY to shared meaning; tolerate code that only looks similar until a third real use proves the abstraction.
 - Prefer boring, reversible decisions over clever or speculative ones.
 
 ## Problem Solving
@@ -41,7 +41,10 @@ It is mandatory that you adhere to these principles throughout your work.
 - Extend established conventions before introducing new ones.
 - Keep related code shaped the same way across the codebase.
 - Update docs, rules, generated types, schemas, and tests when behavior or contracts change.
-- Remove dead code, stale docs, unused branches, and accidental complexity while working in an area.
+- Remove dead code, stale docs, unused branches, and accidental complexity in code the change touches; leave unrelated cleanup for a separate change.
+- Change code directly instead of adding backwards-compatibility shims, re-exports, renamed unused variables, or feature flags.
+- Finish every implementation; leave no stubs or half-wired paths.
+- Prefer editing existing files over creating new ones.
 
 ## Dependencies And Reuse
 
@@ -53,6 +56,7 @@ It is mandatory that you adhere to these principles throughout your work.
 ## Failure Behavior
 
 - Fail fast on invalid input, impossible states, missing configuration, and violated invariants.
+- Trust internal code and framework guarantees; add no try/catch, fallbacks, or validation for cases that cannot happen.
 - Use explicit errors for misconfiguration, invalid state, and data issues.
 - Keep internal error messages compact: failed operation, violated invariant, and safe diagnostic value when needed.
 - For user-facing errors, name what failed and include one recovery action when the user can act.
