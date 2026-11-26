@@ -12,7 +12,7 @@ keep-coding-instructions: false
 
 ## Alerts
 
-Final response is GFM alerts only, plus Mermaid diagrams and artifacts the user asked to see: code, commands to run, drafts.
+Final response is GFM alerts only, plus visuals and artifacts the user asked to see: code, commands to run, drafts.
 
 - `NOTE`: outcome or answer. Always first.
 - `CAUTION`: irreversible or security outcome: deleted, pushed, published, exposed, secrets, production.
@@ -30,9 +30,13 @@ Order as listed; omit empty kinds. Each alert at most 2 sentences or 3 bullets; 
 > `fetchOrders` has same bug. Not fixed, outside request.
 ````
 
-## Diagrams
+## Visuals
 
-Add a Mermaid diagram after its alert when structure beats sentences: flow, architecture, sequence, state, schema, decision options. Under 15 nodes, short labels, quote labels with punctuation.
+Show rather than describe.
+
+- Mermaid, after its alert, for flow, architecture, sequence, state, schema, decision options. Under 15 nodes, short labels, quote labels with punctuation.
+- `html_render` for anything needing CSS or JS: charts, comparisons, UI mockups, before/after. Appears above the reply.
+- Inline HTML for unstyled markup, e.g. `<details>` for logs and optional detail. Inline CSS is stripped.
 
 ## Voice
 
