@@ -1,6 +1,6 @@
 # Software factory: request to merged PR
 
-Each run starts by creating an issue from a feature request or bug report. Triage decides whether the issue proceeds. A run that proceeds creates one pull request (PR) and uses that PR for every revision. Required checks and human approval control merge. AI review is advisory.
+A human works with an agent to create an issue from a feature request or bug report. Issue creation triggers intake. Triage decides whether the issue proceeds. A run that proceeds creates one pull request (PR) and uses that PR for every revision. Required checks and human approval control merge. AI review is advisory.
 
 ```mermaid
 flowchart TD
@@ -20,11 +20,18 @@ flowchart TD
     AI -. Fix within round limit .-> Revise
     Human -. Changes requested .-> Revise
     Revise -. New commit .-> Checks
+
+    classDef automated fill:#17283b,stroke:#60a5fa,color:#dbeafe
+    classDef collaborative fill:#332819,stroke:#fbbf24,color:#fef3c7
+    classDef human fill:#29213d,stroke:#a78bfa,color:#ede9fe
+    class Triage,Reproduce,Implement,PR,Checks,AI,Revise,Merged automated
+    class Intake,Spec collaborative
+    class Human human
 ```
 
 Solid lines show the happy path. Dotted lines show revisions on the same PR. Each new commit restarts CI.
 
-Linked skills come from `.claude/skills` and guide the work at each stage.
+Linked skills come from `.claude/skills` and guide the work at each stage. This document defines the target workflow; the skills need updates to match it.
 
 ## Model capability
 
@@ -178,16 +185,18 @@ A defect in the change sends the PR back for revision. If a runner fails to prod
 
 [Stripe's selective test execution write-up][stripe-ci] describes how it reduces test volume while keeping mandatory tests and rerunning previously failing ones. [Google's mutation testing study][mutation] describes mutating only changed code and filtering out low-value results during review.
 
-## 5. AI code review
+## 5. AI review
 
 Use Opus by default and Haiku for bounded, mechanical changes that can be reviewed against explicit rules and established patterns. Configure high reasoning effort where supported.
 
-Use [requesting-code-review](/home/fida/projects/agents/.claude/skills/requesting-code-review/SKILL.md) for a read-only review at a recorded commit. Start the reviewer with fresh context containing the diff, linked issue or spec, relevant code and tests, and repository-specific review rules. Ask it to find mismatches with intent, regressions, incorrect assumptions, or missing coverage. Obtain approval before publishing findings to GitHub.
+Use [requesting-code-review](/home/fida/projects/agents/.claude/skills/requesting-code-review/SKILL.md) for a read-only review at a recorded commit. Start the reviewer with fresh context containing the diff, linked issue or spec, relevant code and tests, verification evidence, and repository-specific review rules. Review the change against its acceptance criteria, including behavior, UI/UX, accessibility, security, compatibility, documentation, and rollout requirements where applicable. The agent records findings and sends confirmed fixes through the automated revision loop.
 
+- Use [ui-ux](/home/fida/projects/agents/.claude/skills/ui-ux/SKILL.md) to assess complete user tasks, interaction behavior, recovery, and accessibility. Inspect the running UI for user-facing changes and record evidence of the affected flows.
+- Use [writing-tests](/home/fida/projects/agents/.claude/skills/writing-tests/SKILL.md) to assess whether tests protect the intended behavior and detect relevant failures.
 - Use [security-review](/home/fida/projects/agents/.claude/skills/security-review/SKILL.md) for a focused security pass and [unslop](/home/fida/projects/agents/.claude/skills/unslop/SKILL.md) as a read-only maintainability checklist.
-- Ask for a file and line, the scenario that goes wrong, and why it matters. Publish distinct, actionable findings about the change. Use [receiving-code-review](/home/fida/projects/agents/.claude/skills/receiving-code-review/SKILL.md) to validate findings before changing code. Have the author fix confirmed issues, record why a finding does not apply, or flag it for human judgment.
+- For each finding, identify the affected code or screen, the failing scenario, supporting evidence, and why it matters. Publish distinct, actionable findings about the change. Use [receiving-code-review](/home/fida/projects/agents/.claude/skills/receiving-code-review/SKILL.md) to validate findings before changing code. Have the author fix confirmed issues, record why a finding does not apply, or flag it for human judgment.
 - Cap automated review at three rounds per PR. While another round remains, send confirmed fixes through the same PR and rerun CI before AI re-review. After the initial pass, review the new diff and unresolved findings.
-- Send the PR to human review when confirmed fixes are complete or the round limit is reached. Record disputed findings, consequential uncertainty, remaining findings, and reviewer outages for human judgment. AI findings are advisory.
+- Send the PR to human review when confirmed fixes are complete or the round limit is reached. Provide a review summary and verification evidence. Record disputed findings, consequential uncertainty, remaining findings, and review areas that could not be verified for human judgment. AI findings are advisory.
 
 [The Claude Code team][claude-loop] narrows later review rounds to the new diff and suppresses repeat findings. [Uber's uReview][uber] filters findings by confidence, removes duplicates, and tests reviewer changes against examples labeled by engineers.
 
@@ -195,20 +204,71 @@ Use [requesting-code-review](/home/fida/projects/agents/.claude/skills/requestin
 
 Require at least one independent human approval by default. Review the linked intent, diff, and verification evidence. Assess whether the change belongs, the design fits, the tests detect relevant failures, and the remaining risk is acceptable.
 
-Use [ui-ux](/home/fida/projects/agents/.claude/skills/ui-ux/SKILL.md) to assess complete user tasks and accessibility, and [writing-tests](/home/fida/projects/agents/.claude/skills/writing-tests/SKILL.md) to assess whether tests protect the intended behavior.
-
 - Set review depth and required reviewers by path and risk. A documentation fix may need a short read. Changes to authentication, data migrations, or CI and release policy may need a code owner, a specialist, or a second approver.
-- Use [receiving-code-review](/home/fida/projects/agents/.claude/skills/receiving-code-review/SKILL.md) to clarify feedback and verify revisions. Distinguish blocking requests from suggestions. Changes to agreed behavior require an approved spec revision before revising the PR. Revise the PR directly when the spec stands. Record a reason and close the PR when rejecting the change.
+- State blocking requests separately from suggestions. Changes to agreed behavior require an approved spec revision before revising the PR. Request PR revisions directly when the spec stands. Record a reason and close the PR when rejecting the change.
 - Resolve blocking findings before approving. Each new PR commit restarts CI and requires fresh human approval.
 
 [Google's review guide][google-review] covers design, behavior, complexity, and whether the tests would fail if the code broke.
 
 ## 7. Merge
 
-Merge the current PR commit directly into the protected target branch after required CI passes, required human reviewers approve, and all blocking threads are resolved.
+Use Opus to merge automatically into the protected target branch after required CI passes for the current PR commit, required reviewers approve, and all blocking threads are resolved.
 
-- Use [rebase](/home/fida/projects/agents/.claude/skills/rebase/SKILL.md) when rebasing the PR branch or resolving merge conflicts. Preserve the intended change on the same PR, then run CI and review again on the new commit before merging.
+- If the branch is behind the target branch or has merge conflicts, use [rebase](/home/fida/projects/agents/.claude/skills/rebase/SKILL.md) to rebase and resolve conflicts while preserving the intended change on the same PR.
+- After rebasing, run the required checks locally and ensure required CI passes on the new commit. Send failures through the revision loop and obtain fresh review and human approval before merging.
+- For other merge blockers, record the cause and pause until the required approval, thread resolution, or repository access is available.
 - Record the merge and link it to the issue. Track deployment separately. Use later reverts and escaped defects to improve the tests, specifications, and review rules.
+
+<!-- markdownlint-disable-next-line MD025 -->
+# Factory self-improvement
+
+Use execution evidence to improve the factory's configuration and workflow. Improvements go through evaluation, independent review, and human approval before Opus merges them.
+
+| Cadence | Agent | Output |
+| --- | --- | --- |
+| Weekly | Opus with high reasoning effort, coordinating Haiku subagents | Evidence-backed improvement proposals. |
+| Monthly | Opus | Cleanup proposals for obsolete, redundant, contradictory, or ineffective configuration. |
+
+## Improvement principles
+
+- Prefer deterministic solutions where requirements can be enforced reliably. Use code, types, validation, linter rules, and tests for enforceable behavior. Use agent guidance for judgment and procedures.
+- Inspect and improve existing configuration before adding new rules or layers. Consolidate duplicates and resolve contradictions.
+- Keep skills focused on their core task. Put conditional detail in reference files and load it when relevant.
+- Fix the cause in the responsible code, tool, interface, or workflow. Prefer simplifying a confusing mechanism over documenting workarounds.
+- Evaluate added maintenance, execution steps, and context alongside correctness, speed, and cost.
+
+## Weekly analysis
+
+Opus launches Haiku subagents to analyze batches of completed, failed, and cancelled sessions in parallel. Give them session traces, changes, check results, review findings, human feedback, and recorded outcomes. Keep evidence linked to the relevant run and factory version, with secrets and sensitive data redacted.
+
+Haiku extracts failures, user corrections, wasted work, context and handoff problems, and successful strategies. Each observation includes source-event references and a clear distinction between observed behavior and suspected cause.
+
+Opus combines the findings, removes duplicates, and investigates patterns against the original traces and current configuration. Distinguish missing, unavailable, ignored, or contradictory guidance from defects in tools, environment, and verification. Check successful runs and counterexamples before settling on a cause.
+
+Rank proposals by recurrence, severity, confidence, expected benefit, cost, and regression risk. Prioritize critical safety failures even when they occur once. Create an improvement issue with the evidence, proposed change, acceptance criteria, and evaluation plan.
+
+[HALO][halo] uses cross-session trace analysis to identify recurring failure modes and prepare changes for a coding agent.
+
+## Implement and evaluate improvements
+
+Opus implements approved proposals with medium reasoning effort.
+
+For each candidate:
+
+1. Compare it with the current version on representative tasks using fixed grading criteria and comparable execution settings.
+2. Check held-out tasks and unrelated workflows for regressions. Repeat runs where outcomes vary.
+3. Record effects on quality, safety, human intervention, time, and token cost, including the improvement loop's own cost.
+4. Submit the change and evidence for review, with acceptance criteria and rollback conditions.
+
+Changes to permissions, security controls, and evaluation criteria require explicit approval from the responsible human owner.
+
+[OpenAI's improvement loop][improvement-loop] connects traces and feedback to repeatable evaluations. [Microsoft's retrospective harness optimization research][rho] compares candidate changes by replaying selected past tasks.
+
+## Follow-up and monthly cleanup
+
+After merge, compare actual outcomes with the improvement's acceptance criteria. Track results by factory version and comparable task category, including failed attempts in cost totals. Record inconclusive results for further observation and open a revision or revert PR when rollback conditions are met.
+
+Monthly, Opus reviews existing configuration and previous improvements against current behavior and historical results. Propose removal of ineffective or obsolete guidance, consolidation of duplicates, correction of contradictions, and reduction of unnecessary context. Evaluate and review cleanup changes through the same process.
 
 [claude-loop]: https://claude.dev/blog/solving-code-review-at-anthropic/#how-we-make-the-reviewer-better
 [gitlab-design]: https://handbook.gitlab.com/handbook/engineering/architecture/workflow/
@@ -221,3 +281,6 @@ Merge the current PR commit directly into the protected target branch after requ
 [stripe]: https://stripe.dev/blog/minions-stripes-one-shot-end-to-end-coding-agents-part-2
 [uber]: https://www.uber.com/us/en/blog/ureview/
 [vscode]: https://github.com/microsoft/vscode/wiki/Issues-Triaging
+[improvement-loop]: https://developers.openai.com/cookbook/examples/agents_sdk/agent_improvement_loop
+[halo]: https://github.com/context-labs/HALO
+[rho]: https://www.microsoft.com/en-us/research/publication/retrospective-harness-optimization-improving-llm-agents-via-self-preference-over-trajectory-rollouts/
